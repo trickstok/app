@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% block title %}The TikTok of Tricks !{% endblock %}
+{% block content %}
+<div id="all">
+    <div id="home">
+        <div class="container">
+            <div class="overlay">
+                <div class="howto">
+                    <div class="explain">
+                        <ul class="explain-list">
+                            <li class="explain-details">
+                                <h2 class="explain-details-head">Likes</h2>
+                                <span class="explain-details-desc">Cliquez <span class="icon">
+                  <img src="https://assets.codepen.io/2629920/heart.png" alt="">
+                </span> pour mettre un like.</span>
+                            </li>
+                            <li class="explain-details">
+                                <h2 class="explain-details-head">Commentaires</h2>
+                                <span class="explain-details-desc">Cliquez <span class="icon">
+                  <img src="https://assets.codepen.io/2629920/chat.png" alt="">
+                </span> pour voir les commentaires.</span>
+                            </li>
+                        </ul>
+                        <div class="explain-video">
+                            <h2 class="explain-details-head explain-video">Vidéo</h2>
+                            <div class="explain-video-bar">
+                                <div class="explain-video-bar-w"></div>
+                            </div>
+                            <span class="explain-details-desc">Cliquez sur la timeline pour naviguer dans la vidéo.</span>
+                        </div>
+                    </div>
+                    <button class="howto-close">J'ai compris !</button>
+                </div>
+            </div>
+            <div class="comments-container">
+                <div class="comments-head">
+                    <span class="comments-head-label"></span>
+                    <span class="comments-head-close">
+          &#10005;
+        </span>
+
+                </div>
+                <div class="comments-list">
+                </div>
+            </div>
+            <video number="2" after="{{videos[1]}}" before="undefined" src="{{videos[0]}}" id="test" class="video" playsinline autoplay loop></video>
+
+            <!--  top labels   -->
+            <div class="top">
+                <span class="label label-main"><img height="50" alt="trickstok logo" src="/static/assets/trickstok_logo_trans.png"></span>
+                <span class="label label-active">Abonnements</span>
+            </div>
+
+            <!-- right labels  -->
+            <div class="right">
+                <div class="icons-item right-icon">
+        <span class="icon">
+          <img src="https://assets.codepen.io/2629920/heart.png" alt="" id="likes-icon">
+        </span>
+                    <span class="icon-label likes right-label" data-likes='999'>999</span>
+                </div>
+                <div class="icons-item right-icon">
+        <span class="icon">
+          <img src="https://assets.codepen.io/2629920/chat.png" alt="" id="comments-icon">
+        </span>
+                    <span class="icon-label comments right-label"></span>
+                </div>
+                <div class="icons-item right-icon">
+        <span class="icon">
+          <img src="https://assets.codepen.io/2629920/share.png" alt="">
+        </span>
+                    <span class="icon-label shares right-label">94</span>
+                </div>
+
+            </div>
+
+            <!--  bottom labels  -->
+            <div class="bottom">
+                <span class="progress-duration"></span>
+                <div class="progress-range" title="seek">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="icons">
+                    <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/home.png" alt="">
+          </span>
+                        <span class="icon-label" onclick="changePage('home')" style="color: #FF6B6B" >Accueil</span>
+                    </div>
+                    <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/search_1.png" alt="">
+          </span>
+                        <span class="icon-label" onclick="changePage('search')" >Rechercher</span>
+                    </div>
+                    <div class="icons-item">
+                        <div class="icons-item-add">
+            <span class="icon" style="display: flex;">
+              <img src=" https://assets.codepen.io/2629920/add.png" alt="">
+            </span>
+                        </div>
+                    </div>
+                    <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/comment.png" alt="">
+          </span>
+                        <span class="icon-label">Messages</span>
+                    </div>
+                    <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/user+%281%29.png" alt="">
+          </span>
+                        <span class="icon-label" onclick="changePage('account')" >Compte</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="search" style="display: none">
+        <div class="container"></div>
+        <div class="bottom">
+            <span class="progress-duration"></span>
+            <div class="progress-range" title="seek">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="icons">
+                <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/home.png" alt="">
+          </span>
+                    <span class="icon-label" onclick="changePage('home')" >Accueil</span>
+                </div>
+                <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/search_1.png" alt="">
+          </span>
+                    <span class="icon-label" onclick="changePage('search')" style="color: #FF6B6B" >Rechercher</span>
+                </div>
+                <div class="icons-item">
+                    <div class="icons-item-add">
+            <span class="icon" style="display: flex;">
+              <img src=" https://assets.codepen.io/2629920/add.png" alt="">
+            </span>
+                    </div>
+                </div>
+                <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/comment.png" alt="">
+          </span>
+                    <span class="icon-label">Messages</span>
+                </div>
+                <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/user+%281%29.png" alt="">
+          </span>
+                    <span class="icon-label" onclick="changePage('account')" >Compte</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="account" style="display: none">
+        <div class="bottom">
+            <span class="progress-duration"></span>
+            <div class="progress-range" title="seek">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="icons">
+                <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/home.png" alt="">
+          </span>
+                    <span class="icon-label" onclick="changePage('home')" >Accueil</span>
+                </div>
+                <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/search_1.png" alt="">
+          </span>
+                    <span class="icon-label" onclick="changePage('search')" >Rechercher</span>
+                </div>
+                <div class="icons-item">
+                    <div class="icons-item-add">
+            <span class="icon" style="display: flex;">
+              <img src=" https://assets.codepen.io/2629920/add.png" alt="">
+            </span>
+                    </div>
+                </div>
+                <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/comment.png" alt="">
+          </span>
+                    <span class="icon-label">Messages</span>
+                </div>
+                <div class="icons-item">
+          <span class="icon">
+            <img src="https://assets.codepen.io/2629920/user+%281%29.png" alt="">
+          </span>
+                    <span class="icon-label" onclick="changePage('account')" style="color: #FF6B6B" >Compte</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let ids = ['search', 'home', 'account']
+    let number;
+    const videos = {{videos|safe}}
+    function changePage(id) {
+        for (const id1 of ids) {
+            document.getElementById(id1).setAttribute('style', 'display: none');
+        }
+        document.getElementById(id).setAttribute('style', '')
+    }
+    function animdown() {
+        video.setAttribute('class', 'video up')
+        setTimeout(() => {
+            video.src = video.getAttribute('after')
+        }, 450)
+        setTimeout(() => {
+            video.setAttribute('class', 'video')
+        }, 900)
+    }
+    function animup() {
+        video.setAttribute('class', 'video down')
+        setTimeout(() => {
+            video.src = video.getAttribute('before')
+        }, 450)
+        setTimeout(() => {
+            video.setAttribute('class', 'video')
+        }, 900)
+    }
+    function swipedown(video=document.querySelector('.video')) {
+        animdown()
+        video.setAttribute('before', video.src)
+        number = parseInt(video.getAttribute('number'))
+        video.setAttribute('after', videos[number])
+        video.setAttribute('number', number + 1)
+        if (video.getAttribute('after') === 'undefined') {
+            number = 1
+            video.setAttribute('number', 2)
+            video.setAttribute('after', videos[number])
+            video.setAttribute('src', videos[0])
+        }
+    }
+    function swipeup(video=document.querySelector('.video')) {
+        animup()
+        video.setAttribute('after', video.src)
+        number = parseInt(video.getAttribute('number'))
+        video.setAttribute('before', videos[number])
+        video.setAttribute('number', number - 1)
+        if (video.getAttribute('before') === 'undefined') {
+            number = 1
+            video.setAttribute('number', 2)
+            video.setAttribute('before', videos[number])
+            video.setAttribute('src', videos[0])
+        }
+    }
+    const swiper = new Swipe(document.querySelector('.video'))
+    swiper.onDown(swipeup)
+    swiper.onUp(swipedown)
+    swiper.run()
+</script>
+{% endblock %}

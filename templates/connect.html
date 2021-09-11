@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TricksTok, se connecter / s'enregistrer</title>
+    <link rel="stylesheet" href="/static/css/form.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<h2>TricksTok, Se connecter</h2>
+<div class="container" id="container">
+    <div class="form-container sign-up-container">
+        <form action="#">
+            <h1>Créé un compte</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>ou utilisez une adresse mail</span>
+            <input type="text" placeholder="Name" />
+            <input type="email" placeholder="Email" />
+            <input type="password" placeholder="Password" />
+            <button>S'enregistrer</button>
+        </form>
+    </div>
+    <div class="form-container sign-in-container">
+        <form action="#">
+            <h1>Se connecter</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>ou utilisez un email</span>
+            <input type="email" placeholder="Email" />
+            <input type="password" placeholder="Password" />
+            <a href="#">Mot de passe oublié?</a>
+            <button>Se connecter</button>
+        </form>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Bonjour, prêt à devenir un Treecker !</h1>
+                <p>Entrez vos informations et rejoignez les Treeckers !</p>
+                <button class="ghost" id="signIn">Déjà un compte ? Se connecter</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Re bienvenue Treecker !</h1>
+                <p>Connectez vous avec votre compte TricksTok</p>
+                <button class="ghost" id="signUp">Pas de compte ? S'enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const signUpButton = document.getElementById('signUp');
+    const signInButton = document.getElementById('signIn');
+    const container = document.getElementById('container');
+
+    signUpButton.addEventListener('click', () => {
+        container.classList.add("right-panel-active");
+    });
+
+    signInButton.addEventListener('click', () => {
+        container.classList.remove("right-panel-active");
+    });
+</script>
+</body>
+</html>
