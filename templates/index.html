@@ -9,7 +9,7 @@
                     <div class="explain">
                         <ul class="explain-list">
                             <li class="explain-details">
-                                <h2 class="explain-details-head">Likes</h2>
+                                <h2 class="explain-details-head" style="color: #FFE66D;" >Likes</h2>
                                 <span class="explain-details-desc">Cliquez <span class="icon">
                   <img src="https://assets.codepen.io/2629920/heart.png" alt="">
                 </span> pour mettre un like.</span>
@@ -19,6 +19,19 @@
                                 <span class="explain-details-desc">Cliquez <span class="icon">
                   <img src="https://assets.codepen.io/2629920/chat.png" alt="">
                 </span> pour voir les commentaires.</span>
+                            </li>
+                            <li class="explain-details">
+                                <h2 class="explain-details-head" style="color: #FFE66D;">Swipe</h2>
+                                <span class="explain-details-desc">Swiper vers le haut <span class="icon">
+                                    <i class="fas fa-arrow-up"></i>
+                </span> pour aller à la prochaine vidéo.<br></span>
+                                <span class="explain-details-desc">Swiper vers le bas <span class="icon">
+                                    <i class="fas fa-arrow-down"></i>
+                </span> pour revenir à la vidéo précédente.</span>
+                            </li>
+                            <li class="explain-details">
+                                <h2 class="explain-details-head">Conditions</h2>
+                                <span class="explain-details-desc">Cliquez sur j'ai compris pour accepter nos <a>conditions</a> et continuer.</span>
                             </li>
                         </ul>
                         <div class="explain-video">
@@ -35,7 +48,7 @@
             <div class="comments-container">
                 <div class="comments-head">
                     <span class="comments-head-label"></span>
-                    <span class="comments-head-close">
+                    <span style="transform: scale(1.35)" class="comments-head-close">
           &#10005;
         </span>
 
@@ -43,7 +56,7 @@
                 <div class="comments-list">
                 </div>
             </div>
-            <video number="2" after="{{videos[1]}}" before="undefined" src="{{videos[0]}}" id="test" class="video" playsinline autoplay loop></video>
+            <video style="cursor: ns-resize;" title="Swipe" muted="muted" number="0" src="{{videos['srcs'][0]}}" id="{{videos['ids'][0]}}" class="video" playsinline autoplay loop></video>
 
             <!--  top labels   -->
             <div class="top">
@@ -54,22 +67,28 @@
             <!-- right labels  -->
             <div class="right">
                 <div class="icons-item right-icon">
+        <span class="icon" onclick="audio(this.children[0])" style="cursor: pointer">
+          <i  class="fas fa-volume-mute"></i>
+        </span>
+                    <span id="muteun" class="icon-label likes right-label">Muet</span>
+                </div>
+                <div class="icons-item right-icon">
         <span class="icon">
-          <img src="https://assets.codepen.io/2629920/heart.png" alt="" id="likes-icon">
+          <i  id="likes-icon" class="fas fa-heart"></i>
         </span>
                     <span class="icon-label likes right-label" data-likes='999'>999</span>
                 </div>
                 <div class="icons-item right-icon">
         <span class="icon">
-          <img src="https://assets.codepen.io/2629920/chat.png" alt="" id="comments-icon">
+          <i id="comments-icon" class="fas fa-comments"></i>
         </span>
                     <span class="icon-label comments right-label"></span>
                 </div>
-                <div class="icons-item right-icon">
+                <div class="icons-item right-icon" onclick="share()" style="cursor: pointer;">
         <span class="icon">
-          <img src="https://assets.codepen.io/2629920/share.png" alt="">
+          <i class="fas fa-share"></i>
         </span>
-                    <span class="icon-label shares right-label">94</span>
+                    <span class="icon-label shares right-label">Partager</span>
                 </div>
 
             </div>
@@ -159,6 +178,69 @@
         </div>
     </div>
     <div id="account" style="display: none">
+        <div class="container profil">
+            <div class="profile">
+                <div class="image">
+                    <img src="/static/assets/trickstok_logo.png" alt="Profil Picture">
+                </div>
+                <div class="infos">
+                    <h1>Tricky Tricks Official <i class="fas fa-certificate"></i></h1>
+                    <p>Le compte officiel de Tricky Tricks</p>
+                </div>
+            </div>
+            <div class="videos">
+                <div class="video-card">
+                    <div class="video-header">
+                        <h1>Clean kickflip !</h1>
+                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
+                    </div>
+                    <div class="video-media">
+                        <video src="/static/assets/Clean%20kickflip.mp4"></video>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-header">
+                        <h1>Wheep !</h1>
+                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
+                    </div>
+                    <div class="video-media">
+                        <video src="/static/assets/scooter.mp4"></video>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-header">
+                        <h1>Triple kaboom</h1>
+                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
+                    </div>
+                    <div class="video-media">
+                        <video src="/static/assets/tramp.mp4"></video>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-header">
+                        <h1>Surf clip</h1>
+                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
+                    </div>
+                    <div class="video-media">
+                        <video src="/static/assets/surf-kickflip.mp4"></video>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-header">
+                        <h1>Longboard skills</h1>
+                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
+                    </div>
+                    <div class="video-media">
+                        <video src="/static/assets/longboard.mp4"></video>
+                    </div>
+                </div>
+                <div style="height: 14em"></div>
+            </div>
+            <div class="profil-footer" style="padding-top: 5em;">
+                <h3>Profil de Tricky Tricks Official <i class="fas fa-certificate"></i></h3>
+                <p>(Authenticité certifiée)</p>
+            </div>
+        </div>
         <div class="bottom">
             <span class="progress-duration"></span>
             <div class="progress-range" title="seek">
@@ -194,7 +276,7 @@
           <span class="icon">
             <img src="https://assets.codepen.io/2629920/user+%281%29.png" alt="">
           </span>
-                    <span class="icon-label" onclick="changePage('account')" style="color: #FF6B6B" >Compte</span>
+                    <span class="icon-label" onclick="changePage('account')" style="color: #FFE66D" >Compte</span>
                 </div>
             </div>
         </div>
@@ -202,61 +284,76 @@
 </div>
 <script>
     let ids = ['search', 'home', 'account']
-    let number;
-    const videos = {{videos|safe}}
+    let number, link;
+    const videos = {{videos['srcs']|safe}};
+    const comments_ids = {{videos['ids']|safe}};
+    const videos_length = videos.length;
     function changePage(id) {
         for (const id1 of ids) {
             document.getElementById(id1).setAttribute('style', 'display: none');
         }
         document.getElementById(id).setAttribute('style', '')
     }
-    function animdown() {
+    function animdown(src, id) {
         video.setAttribute('class', 'video up')
         setTimeout(() => {
-            video.src = video.getAttribute('after')
+            video.src = src
+            video.id = id
+            loadComments(video.getAttribute('id'))
         }, 450)
         setTimeout(() => {
             video.setAttribute('class', 'video')
         }, 900)
     }
-    function animup() {
+    function animup(src, id) {
         video.setAttribute('class', 'video down')
         setTimeout(() => {
-            video.src = video.getAttribute('before')
+            video.src = src
+            video.id = id
+            loadComments(video.getAttribute('id'))
         }, 450)
         setTimeout(() => {
             video.setAttribute('class', 'video')
         }, 900)
     }
     function swipedown(video=document.querySelector('.video')) {
-        animdown()
-        video.setAttribute('before', video.src)
-        number = parseInt(video.getAttribute('number'))
-        video.setAttribute('after', videos[number])
-        video.setAttribute('number', number + 1)
-        if (video.getAttribute('after') === 'undefined') {
-            number = 1
-            video.setAttribute('number', 2)
-            video.setAttribute('after', videos[number])
-            video.setAttribute('src', videos[0])
+        number = parseInt(video.getAttribute('number')) + 1
+        if (videos[number] === undefined) {
+            number = 0
         }
+        animdown(videos[number], comments_ids[number])
+        video.setAttribute('number', number)
     }
     function swipeup(video=document.querySelector('.video')) {
-        animup()
-        video.setAttribute('after', video.src)
-        number = parseInt(video.getAttribute('number'))
-        video.setAttribute('before', videos[number])
-        video.setAttribute('number', number - 1)
-        if (video.getAttribute('before') === 'undefined') {
-            number = 1
-            video.setAttribute('number', 2)
-            video.setAttribute('before', videos[number])
-            video.setAttribute('src', videos[0])
+        number = parseInt(video.getAttribute('number')) - 1
+        if (videos[number] === undefined) {
+            number = videos_length - 1
         }
+        animup(videos[number], comments_ids[number])
+        video.setAttribute('number', number)
     }
     const swiper = new Swipe(document.querySelector('.video'))
     swiper.onDown(swipeup)
     swiper.onUp(swipedown)
     swiper.run()
+    function audio(obj) {
+        if (video.muted) {
+            video.muted = false;
+            obj.setAttribute('class', 'fas fa-volume-up')
+            document.getElementById('muteun').innerHTML = '&nbsp;Son&nbsp;'
+        } else {
+            video.muted = true;
+            obj.setAttribute('class', 'fas fa-volume-mute')
+            document.getElementById('muteun').innerHTML = 'Muet'
+        }
+    }
+    function share() {
+        link = window.location.method + window.location.host + `/video/${comments_ids[parseInt(video.getAttribute('number'))]}`
+        navigator.share({
+            title: `Tricky Tricks, vidéo ${video.src} !`,
+            text: 'Va checker cette vidéo elle est super bien !',
+            url: link
+        })
+    }
 </script>
 {% endblock %}

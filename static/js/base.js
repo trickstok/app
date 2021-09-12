@@ -1,5 +1,8 @@
 let likesAmount = "";
-const video = document.querySelector(".video");
+var video = document.querySelector(".video");
+video.onchange = function () {
+    video = document.querySelector('.video')
+}
 const duration = document.querySelector(".progress-duration");
 const range = document.querySelector(".progress-range");
 const bar = document.querySelector(".progress-bar");
@@ -66,8 +69,8 @@ function deactivateComments() {
     }
 }
 
-function loadComments() {
-    fetch(`/get-comments/${video.getAttribute('id')}`
+function loadComments(id=video.id) {
+    fetch(`/get-comments/${id}`
     )
         .then((response) => {
             return response.json();

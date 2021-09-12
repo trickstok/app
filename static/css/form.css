@@ -160,8 +160,8 @@ input {
 
 .overlay {
     background: #FFE66D;
-    background: -webkit-linear-gradient(to right, #FF6B6B, #FFE66D);
-    background: linear-gradient(to right, #FF6B6B, #FFE66D);
+    background: -webkit-linear-gradient(to right,#FF6B6B 50%, #FFE66D 50%);
+    background: linear-gradient(to right, #FF6B6B 50%, #FFE66D 50%);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 0 0;
@@ -204,6 +204,12 @@ input {
 .overlay-right {
     right: 0;
     transform: translateX(0);
+    color: #000 !important;
+}
+.overlay-right button {
+    color: #000 !important;
+    border-radius: 20px;
+    border: 1px solid #000;
 }
 
 .container.right-panel-active .overlay-right {

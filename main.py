@@ -1,44 +1,45 @@
+import json
+import random
+
 import flask
+import requests
 from flask import Flask, request, redirect, render_template
-import pymongo
-
-app = Flask('TricksTok, The TikTok of Tricks')
-
-comments = {
-    "test": [
-        {
-            "userName": "CAMARM",
-            "timePosted": "il y a 5h",
-            "profilePhoto":
-                "https://www.camarm.dev/favicon.png",
-            "comment": "Waww so clean"
-        },
-        {
-            "userName": "Tricktok official",
-            "timePosted": "il y a 4h",
-            "profilePhoto":
-                "/favicon.png",
-            "comment": "Too clean men, gg !"
-        },
-        {
-            "userName": "Mr. Mopi",
-            "timePosted": "il y a 2h",
-            "profilePhoto":
-                "https://6erxg60qvo1qvjha44jrgpan-wpengine.netdna-ssl.com/wp-content/uploads/2018/10/Mr-Billy-Urudra-President-MOPI.jpg",
-            "comment": "Il m'en faut un c'est sûr !"
-        },
-        {
-            "userName": "Tony Hawk",
-            "timePosted": "Maintenant",
-            "profilePhoto":
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Tony_Hawk_2016_%28cropped%29.jpg/260px-Tony_Hawk_2016_%28cropped%29.jpg",
-            "comment": "Mieux que  moi !"
-        },
-    ]
-}
 
 
-videos = ['/static/assets/' + video for video in ['surf-kickflip.mp4', 'Clean%20kickflip.mp4', 'tramp.mp4', 'longboard.mp4', 'scooter.mp4', '']]
+def randomComment():
+    name = requests.get('https://api.namefake.com/').json()['name']
+    content = random.choice(random.choice(requests.get('https://poetrydb.org/poemcount/10/lines.json').json())['lines'])
+    time = random.choice(['Maintenant', f'Il y a {random.choice([1, 2, 3, 4, 5, 6, 7, 8])}h', f'Il y a {random.choice([1, 2, 3, 4, 5, 6, 7, 8])}jours'])
+    pp = requests.post(
+        "https://api.deepai.org/api/text2img",
+        data={
+            'text': name,
+        },
+        headers={'api-key': 'd6ffa577-9556-4947-a2fe-e25e0c87bc04'}
+    ).json()["output_url"]
+    return {
+        "userName": name,
+        "timePosted": time,
+        "profilePhoto":
+            pp,
+        "comment": content
+    }
+
+
+app = Flask('TrickyTricks, The TikTok of Tricks')
+
+videos_ = ['surf-kickflip.mp4', 'Clean%20kickflip.mp4', 'tramp.mp4', 'longboard.mp4', 'scooter.mp4', 'fabio.mp4', 'bmx.mp4']
+
+videos = {'srcs': ['/static/assets/' + video for video in videos_], 'ids': [video for video in videos_]}
+
+print([videos['srcs'][num]for num in range(4)])
+print([videos['ids'][num] for num in range(4)])
+
+comments = json.loads(open('static/test/comments.json').read())
+# with open('static/test/comments.json', 'w+') as f:
+#     f.write(json.dumps(comments))
+#     print(f.read())
+#     f.close()
 
 
 def auth(returned):
@@ -49,6 +50,11 @@ def auth(returned):
 @app.route('/home')
 def home():
     return auth(render_template('index.html', videos=videos))
+
+
+@app.route('/service-worker.js')
+def sendWorker():
+    return flask.send_file('static/js/pwa/service-worker.js')
 
 
 @app.route('/')

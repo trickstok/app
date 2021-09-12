@@ -1,0 +1,17 @@
+{
+  "name": "Tricky Tricks",
+  "short_name": "TRTKS",
+  "description": "Un tiktok des Tricks pour les Treeckers",
+  "theme_color": "#FFE66D",
+  "background_color": "#FF6B6B",
+  "icons": [
+    {
+      "src": "/static/assets/trickstok_logo_trans.png",
+      "type": "image/png",
+      "sizes": "100x100"
+    }
+  ],
+  "start_url": "/home",
+  "display": "standalone",
+  "orientation": "portrait"
+}
