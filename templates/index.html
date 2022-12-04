@@ -2,6 +2,14 @@
 {% block title %}The TikTok of Tricks !{% endblock %}
 {% block content %}
 <div id="all">
+  <div class="screenloader">
+    <div class="tk-loader">
+      <span class="dot red"></span>
+      <span class="dot blue"></span>
+      <span class="dot yellow"></span>
+    </div>
+    <p class="has-text-white has-text-bold">Chargement de TricksTok...</p>
+  </div>
     <div id="home">
         <div class="container">
             <div class="overlay">
@@ -214,10 +222,12 @@
     let overlayMore = document.querySelector('.overlay')
     let number, link;
     var videoID = '{{video.video_id}}'
-    var videoObject = {{video|safe}}
+    var videoObject = {{video|string|replace('True', 'true')|replace('False', 'false')|safe}}
     const videos = [];
     const comments_ids = [];
     const videos_length = videos.length;
+
+    video.pause()
 
     function addVideoIDToPath(form, path) {
         form.action = path + videoID
@@ -308,7 +318,7 @@
             }
             navigator.share(data)
         } else {
-            navigator.clipboard.writeText(`TricksTok, \n\n${link}`);
+            navigator.clipboard.writeText(`${link}`);
             alert('Lien copié dans le presse papier !')
         }
     }
@@ -326,10 +336,13 @@
         if (ids.includes(window.location.hash.replace('#', ''))) {
             changePage(window.location.hash.replace('#', ''))
         }
+        document.querySelector('.screenloader').classList.add('disable')
+        video.play()
     })
 
     function fullScreen() {
         document.documentElement.requestFullscreen().then(r => console.log(r)).catch(e => console.warn(e))
     }
+
 </script>
 {% endblock %}

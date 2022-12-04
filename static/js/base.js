@@ -1,4 +1,4 @@
-let tag, tags_string, html, username
+let tags_string, html, username
 
 var video = document.querySelector(".video");
 video.onchange = function () {
@@ -125,21 +125,20 @@ function pause(forcePause=false) {
 
 function loadNewVideo() {
 
-    fetch(`/watch`)
+    fetch(`/watch?different_of=${videoID}`)
         .then(resp => resp.json())
         .then(data => {
             console.log(data)
             likesIcon.classList.remove('active')
             videoObject = data.data
             if (videoObject.liked) {
-                likesIconAnim
                 likesIcon.classList.add('active')
             }
-            history.push(videoObject)
+            // history.push(videoObject)
             videoID = videoObject.video_id
             video.setAttribute('data-id', videoID)
             tags_string = ''
-            for (tag of videoObject.tags) {
+            for (const tag of videoObject.tags) {
                 tags_string += `#${tag} `
             }
             description.innerText = `${videoObject.description} ${tags_string}`
@@ -154,17 +153,19 @@ function loadNewVideo() {
             likes.innerText = videoObject.likes_count
             commentsCount.innerText = `${videoObject.comment_count} commentaires`
             commentsCount2.innerText = videoObject.comment_count
-            for (comment of videoObject.comments) {
-                html = `<div class="comments-item">
-                          <span class="comment-top">
-                            <span class="comment-top-logo" style="background-image:url(/media/pdp/${comment.user.photo})"></span>
-                            <span class="comment-top-details">
-                              <span class="user-name">${comment.user.fullname}</span>
-                              <span class="user-time">${comment.user.username}</span>
-                              <span class="user-comment">${comment.content}</span>
-                            </span>
-                          </span>
-                        </div>`
+            commentsList.innerHTML = ''
+            for (const comment of videoObject.comments) {
+                html = `
+                <div class="comments-item">
+                    <span class="comment-top">
+                      <span class="comment-top-logo image is-rounded"><img src="/media/pdp/${comment.user.photo}" class="photo is-rounded"></span>
+                      <span class="comment-top-details">
+                        <span class="user-name">${comment.user.fullname}</span>
+                        <span class="user-time">${comment.user.username}</span>
+                        <span class="user-comment">${comment.content}</span>
+                      </span>
+                    </span>
+                  </div>`
                 commentsList.insertAdjacentHTML("afterbegin", html);
             }
             video.src = `/media/videos/${videoID}`
@@ -175,9 +176,11 @@ function like() {
     if (videoObject.liked) {
         likesIcon.classList.remove('active')
         fetch(`/unlike/${videoID}`)
+        videoObject.liked = false
     } else {
         likesIcon.classList.add('active')
         fetch(`/like/${videoID}`)
+        videoObject.liked = true
     }
 }
 
@@ -192,7 +195,6 @@ video.addEventListener('click', () => {
 })
 commentsIcon.addEventListener("click", activateComments);
 closeComments.addEventListener("click", deactivateComments);
-likesIcon.addEventListener("click", like);
 addButton.addEventListener('click', () => {
     location.href = '/add'
 })

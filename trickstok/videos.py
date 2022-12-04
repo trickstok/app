@@ -55,6 +55,16 @@ class Videos(DatabaseObject):
         return False
 
     def random(self, user, different_from=None):
+        if different_from is not None:
+            video = list(self.db.videos.aggregate([
+                {"$sample": {"size": 1}}
+            ]))[0]
+            while video['video_id'] == different_from:
+                video = list(self.db.videos.aggregate([
+                    {"$sample": {"size": 1}}
+                ]))[0]
+            video['liked'] = self.is_liked(video['_id'], user)
+            return Video(video, self.db)
         not_viewed = self.find_not_viewed_by_user(user, True)
         if len(not_viewed) == 0:
             video = list(self.db.videos.aggregate([
@@ -84,7 +94,7 @@ class Video:
         self.video['comments'] = self.get_comments()
         self.video['comment_count'] = len(self.video['comments'])
         self.video['likes_count'] = self.db.views.count_documents({"video": self.video['_id'], "liked": True})
-        self.video['views'] = self.db.view.count_documents({"video": self.video['_id']})
+        self.video['views'] = self.db.views.count_documents({"video": self.video['_id']})
         self.video_object_id = video['_id']
         del self.video['_id']
         del self.video['user']['token']
@@ -99,16 +109,16 @@ class Video:
         })
 
     def add_view(self, user):
-        has_been_viewed = self.db.view.find_one({'video': self.video_object_id, 'user': user})
+        has_been_viewed = self.db.views.find_one({'video': self.video_object_id, 'user': user})
         if has_been_viewed is not None:
             return
-        self.db.view.insert_one({'video': self.video_object_id, 'user': user, 'liked': False})
+        self.db.views.insert_one({'video': self.video_object_id, 'user': user, 'liked': False})
 
     def like(self, user):
-        self.db.view.update_one({'video': self.video_object_id, 'user': user}, {'$set': {'liked': True}})
+        self.db.views.update_one({'video': self.video_object_id, 'user': user}, {'$set': {'liked': True}})
 
     def unlike(self, user):
-        self.db.view.update_one({'video': self.video_object_id, 'user': user}, {'$set': {'liked': False}})
+        self.db.views.update_one({'video': self.video_object_id, 'user': user}, {'$set': {'liked': False}})
 
     def report(self, reason, user_id):
         self.db.reports.insert_one({

@@ -2,6 +2,7 @@ import json
 import random
 import re
 import secrets
+import sys
 
 import conf
 import flask
@@ -44,10 +45,16 @@ def presentation():
 
 @app.route('/home')
 def home():
+    logged, user = is_logged()
     if request.args.get('video') is not None:
         video = videos.find_by_id(request.args.get('video'))
-        return auth('index.html', video=video.video)
-    logged, user = is_logged()
+        video_id = video.video_object_id
+        video = video.video
+        if user:
+            video['liked'] = videos.is_liked(video_id, user['_id'])
+        else:
+            video['liked'] = False
+        return auth('index.html', video=video)
     if logged:
         return auth('index.html', video=videos.random(user['_id']).video)
     return redirect('/log')
@@ -171,7 +178,7 @@ def reportVideo(video):
     return redirect('/log')
 
 
-@app.route('/like/<video>', methods=['POST'])
+@app.route('/like/<video>')
 def likeVideo(video):
     logged, user = is_logged()
     if logged:
@@ -180,7 +187,7 @@ def likeVideo(video):
     return {"message": "Error not connected"}
 
 
-@app.route('/unlike/<video>', methods=['POST'])
+@app.route('/unlike/<video>')
 def unlikeVideo(video):
     logged, user = is_logged()
     if logged:
@@ -226,4 +233,10 @@ def favicon():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=10000)
+    debug = False
+    if '--debug' in sys.argv:
+        debug = True
+    if '--secure' in sys.argv:
+        app.run(debug=debug, host='0.0.0.0', port=10000, ssl_context=('certificate.pem', 'privatekey.pem'))
+    else:
+        app.run(debug=debug, host='0.0.0.0', port=10000)
