@@ -1,4 +1,5 @@
 import json
+import os
 import random
 import re
 import secrets
@@ -196,12 +197,12 @@ def unlikeVideo(video):
     return {"message": "Error not connected"}
 
 
-def stream(path):
-    with open(path, "rb") as file:
-        data = file.read(1024)
-        while data:
-            yield data
-            data = file.read(1024)
+# def stream(path):
+#     file = open(path, "rb")
+#     data = file.read(1024)
+#     while data:
+#         yield b'--frame\r\nContent-Type: image/mpeg\r\n\r\n' + data + b'\r\n'
+#         data = file.read(1024)
 
 
 @app.route('/media/<type>/<file>')
@@ -210,7 +211,7 @@ def deliver_media(type, file):
     if logged:
         if type == 'videos':
             videos.find_by_id(file).add_view(user['_id'])
-            return Response(stream(f'data/{type}/{file}'))
+            return send_file(f'data/{type}/{file}')
         return send_file(f'data/{type}/{file}')
     return ""
 
@@ -237,6 +238,6 @@ if __name__ == '__main__':
     if '--debug' in sys.argv:
         debug = True
     if '--secure' in sys.argv:
-        app.run(debug=debug, host='0.0.0.0', port=10000, ssl_context=('certificate.pem', 'privatekey.pem'))
+        app.run(debug=debug, threaded=True, host='0.0.0.0', port=10000, ssl_context=('certificate.pem', 'privatekey.pem'))
     else:
-        app.run(debug=debug, host='0.0.0.0', port=10000)
+        app.run(debug=debug, threaded=True, host='0.0.0.0', port=10000)

@@ -48,6 +48,16 @@ class Videos(DatabaseObject):
             return [Video(self.db.videos.find({"_id": not_view['_id']}), self.db).video for not_view in not_viewed]
         return [not_view['_id'] for not_view in not_viewed]
 
+    def find_interests_not_viewed_by_user(self, _id, in_list=False):
+        user_interests = self.db.users.find_one({'_id': _id})['interests']
+        viewed = self.find_viewed_by_user(_id, True)
+        not_viewed = []
+        for interest in user_interests:
+            not_viewed.insert(self.db.videos.find({'_id': {"$not": {"$in": [viewed]}}, '$text': {'$search': interest}}))
+        if not in_list:
+            return [Video(self.db.videos.find({"_id": not_view['_id']}), self.db).video for not_view in not_viewed]
+        return [not_view['_id'] for not_view in not_viewed]
+
     def is_liked(self, video, user):
         video = self.db.views.find_one({'video': video, 'user': user})
         if video:
@@ -55,24 +65,20 @@ class Videos(DatabaseObject):
         return False
 
     def random(self, user, different_from=None):
-        if different_from is not None:
-            video = list(self.db.videos.aggregate([
-                {"$sample": {"size": 1}}
-            ]))[0]
-            while video['video_id'] == different_from:
-                video = list(self.db.videos.aggregate([
-                    {"$sample": {"size": 1}}
-                ]))[0]
-            video['liked'] = self.is_liked(video['_id'], user)
-            return Video(video, self.db)
+        not_viewed_by_interests = self.find_interests_not_viewed_by_user(user, True)
         not_viewed = self.find_not_viewed_by_user(user, True)
-        if len(not_viewed) == 0:
+        if len(not_viewed_by_interests) > 0:
+            video = self.db.videos.find_one({'_id': not_viewed_by_interests[0]})
+        elif len(not_viewed) == 0:
             video = list(self.db.videos.aggregate([
                 {"$sample": {"size": 1}}
             ]))[0]
         else:
             video = self.db.videos.find_one({'_id': not_viewed[0]})
         video['liked'] = self.is_liked(video['_id'], user)
+        if different_from is not None:
+            if video['video_id'] == different_from:
+                video = self.random(user, different_from)
         # video_user = self.db.users.find_one({'_id': video['user']})
         # while video_user['banned']:
         #     video = list(self.db.videos.aggregate([
