@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TricksTok, se connecter / s'enregistrer</title>
+    <link rel="stylesheet" href="/static/css/form.css">
+    <script src="https://kit.fontawesome.com/628c8d2499.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<form method="post" action="/register" enctype="multipart/form-data">
+    <section class="section has-padding">
+        <h2 class="title is-2">TricksTok, S'enregistrer</h2>
+        <p class="subtitle is-6">Rejoins les trickers !</p>
+
+        <div class="content has-text-centered">
+            <a class="has-test-grey" href="/login">Se connecter</a>
+            -
+            <a class="has-test-grey" href="/cgu">CGU</a>
+        </div>
+
+        <div class="field">
+            <label class="label">Nom Complet</label>
+            <div class="control">
+                <input class="input" type="text" placeholder="John Doe" name="fullname" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Nom d'utilisateur</label>
+            <div class="control has-icons-left">
+                <input class="input is-success" type="text" placeholder="johndoe" pattern="^[a-z0-9_.]+$" name="username" required>
+                <span class="icon is-small is-left">
+              <i class="fas fa-at"></i>
+            </span>
+            </div>
+            <p class="help is-success" id="username-info"></p>
+            <p class="help is-danger">Please only use a-z 0-9 "." and "_" characters</p>
+        </div>
+
+        <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left">
+                <input class="input" type="email" placeholder="john@doe.com" name="email" required>
+                <span class="icon is-small is-left">
+              <i class="fas fa-envelope"></i>
+            </span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Password</label>
+            <div class="control has-icons-left">
+                <input class="input" type="password" placeholder="******" name="password" required>
+                <span class="icon is-small is-left">
+              <i class="fas fa-key"></i>
+            </span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Bio</label>
+            <div class="control has-icons-left">
+            <textarea class="textarea" name="bio" placeholder="Je suis John Doe, je pratique..." required>
+
+            </textarea>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Photo</label>
+            <figure class="media-left">
+                <p class="image is-64x64" style="margin-bottom: 1em;">
+                    <img class="is-rounded" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAMgCAIAAABUEpE/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAB15JREFUeNrswQEBAAAAgiD/r25IQAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8mgADAFDTAAFwnByMAAAAAElFTkSuQmCC" style="object-fit: cover; width: 100%; height: 100%" id="preview">
+                </p>
+            </figure>
+            <div class="file">
+                <label class="file-label">
+                    <input class="file-input" type="file" name="photo" accept="image/png,image/jpeg" id="pdp">
+                    <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    Choisir un fichier
+                  </span>
+                </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <label class="checkbox">
+                    <input type="checkbox" required>
+                    J'accepte les <a href="/cgu">conditions d'utilisation</a>
+                </label>
+            </div>
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-link" type="submit">S'enregistrer</button>
+            </div>
+        </div>
+    </section>
+</form>
+<script>
+    let fileInput = document.querySelector('#pdp')
+    let usernameInput = document.querySelector('[name=\'username\']')
+    let usernameInfo = document.querySelector('#username-info')
+    let photoPreview = document.querySelector('#preview')
+    let file, username
+
+    fileInput.addEventListener('change', async () => {
+        file = fileInput.files[0]
+        photoPreview.src = await toBase64(file)
+    })
+
+    usernameInput.addEventListener('change', verifyUsername)
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    function verifyUsername() {
+        username = usernameInput.value
+
+        fetch(`/username-is-available?username=${username}`)
+            .then(resp => { return resp.json() })
+            .then(json => {
+                if (json['available']) {
+                    usernameInput.setCustomValidity("");
+                    usernameInput.classList.remove('is-danger')
+                    usernameInfo.classList.remove('is-danger')
+                    usernameInput.classList.add('is-success')
+                    usernameInfo.classList.add('is-success')
+                    usernameInfo.innerText = 'Ce nom d\'utilisateur est disponible'
+                } else {
+                    usernameInput.setCustomValidity("Nom d'utilisateur déjà pris !");
+                    usernameInput.classList.add('is-danger')
+                    usernameInfo.classList.add('is-danger')
+                    usernameInput.classList.remove('is-success')
+                    usernameInfo.classList.remove('is-success')
+                    usernameInfo.innerText = 'Ce nom d\'utilisateur est déjà pris'
+                }
+            })
+    }
+</script>
+</body>
+</html>

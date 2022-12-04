@@ -6,336 +6,286 @@
         <div class="container">
             <div class="overlay">
                 <div class="howto">
-                    <div class="explain">
-                        <ul class="explain-list">
-                            <li class="explain-details">
-                                <h2 class="explain-details-head" style="color: #FFE66D;" >Likes</h2>
-                                <span class="explain-details-desc">Cliquez <span class="icon">
-                  <img src="https://assets.codepen.io/2629920/heart.png" alt="">
-                </span> pour mettre un like.</span>
-                            </li>
-                            <li class="explain-details">
-                                <h2 class="explain-details-head">Commentaires</h2>
-                                <span class="explain-details-desc">Cliquez <span class="icon">
-                  <img src="https://assets.codepen.io/2629920/chat.png" alt="">
-                </span> pour voir les commentaires.</span>
-                            </li>
-                            <li class="explain-details">
-                                <h2 class="explain-details-head" style="color: #FFE66D;">Swipe</h2>
-                                <span class="explain-details-desc">Swiper vers le haut <span class="icon">
-                                    <i class="fas fa-arrow-up"></i>
-                </span> pour aller à la prochaine vidéo.<br></span>
-                                <span class="explain-details-desc">Swiper vers le bas <span class="icon">
-                                    <i class="fas fa-arrow-down"></i>
-                </span> pour revenir à la vidéo précédente.</span>
-                            </li>
-                            <li class="explain-details">
-                                <h2 class="explain-details-head">Conditions</h2>
-                                <span class="explain-details-desc">Cliquez sur j'ai compris pour accepter nos <a>conditions</a> et continuer.</span>
-                            </li>
-                        </ul>
-                        <div class="explain-video">
-                            <h2 class="explain-details-head explain-video">Vidéo</h2>
-                            <div class="explain-video-bar">
-                                <div class="explain-video-bar-w"></div>
-                            </div>
-                            <span class="explain-details-desc">Cliquez sur la timeline pour naviguer dans la vidéo.</span>
-                        </div>
-                    </div>
-                    <button class="howto-close">J'ai compris !</button>
-                </div>
+                  <div class="explain">
+                    <span class="overlay-head-close" onclick="moreClose()">✕</span>
+                    <ul class="explain-list">
+                      <li class="explain-details">
+                        <h2 class="explain-details-head">Vidéo</h2>
+                        <span class="explain-details-desc">
+                          <div class="overlay-more-section">
+                            <strong>Mode plein écran</strong>
+                            <button onclick="fullScreen()" class="button is-small is-third is-limited">Activer</button>
+                          </div>
+                          <strong>Signaler la vidéo:</strong>
+                          <form action="/signal/" onsubmit="addVideoIDToPath(this, '/signal/')" method="post" class="overlay-more-section">
+                            <p>Commentaire:</p>
+                            <input type="text" class="input is-small" placeholder="Décrivez nous la raison du signalement." name="reason" required>
+                            <p class="help is-danger"><i class="fas fa-exclamation-triangle"></i> &nbsp;Tout signalement abusif sera sanctionné</p>
+                            <button class="button is-small is-primary is-limited">Signaler</button>
+                          </form>
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+              </div>
             </div>
             <div class="comments-container">
-                <div class="comments-head">
-                    <span class="comments-head-label"></span>
-                    <span style="transform: scale(1.35)" class="comments-head-close">
-          &#10005;
-        </span>
-
-                </div>
+              <div class="comments-head">
+                <span class="comments-head-label">
+                  Commentaires
+                </span>
+                <span style="transform: scale(1.35)" class="comments-head-close">
+                  &#10005;
+                </span>
+              </div>
                 <div class="comments-list">
+                  {% for comment in video.comments %}
+                  <div class="comments-item">
+                    <span class="comment-top">
+                      <span class="comment-top-logo image is-rounded"><img src="/media/pdp/{{comment.user.photo}}" class="photo is-rounded"></span>
+                      <span class="comment-top-details">
+                        <span class="user-name">{{comment.user.fullname}}</span>
+                        <span class="user-time">{{comment.user.username}}</span>
+                        <span class="user-comment">{{comment.content}}</span>
+                      </span>
+                    </span>
+                  </div>
+                  {% endfor %}
+                </div>
+                <div class="write-comment">
+                  <form action="/comment/" onsubmit="addVideoIDToPath(this, '/comment/')" class="one-lined" method="post">
+                    <input class="input is-small" name="comment" required placeholder="Commentez quelque chose..."> <button class="button is-small"><i class="fas fa-paper-plane"></i></button>
+                  </form>
                 </div>
             </div>
-            <video style="cursor: ns-resize;" title="Swipe" muted="muted" number="0" src="{{videos['srcs'][0]}}" id="{{videos['ids'][0]}}" class="video" playsinline autoplay loop></video>
 
-            <!--  top labels   -->
+
+            <video data_id="{{video.video_id}}" style="cursor: s-resize;" title="Swipe" muted="" number="0" src="/media/videos/{{video.video_id}}" class="video" playsinline autoplay loop></video>
+
+
             <div class="top">
                 <span class="label label-main"><img height="50" alt="trickstok logo" src="/static/assets/trickstok_logo_trans.png"></span>
-                <span class="label label-active">Abonnements</span>
+                <span class="label label-active">Vidéos</span>
             </div>
 
-            <!-- right labels  -->
+            <div class="pause">
+              <div class="icons-item right-icon">
+                <span class="icon">
+                  <i class="fas fa-pause fa-2x" id="playpauseicon"></i>
+                </span>
+              </div>
+            </div>
+
             <div class="right">
-                <div class="icons-item right-icon">
-        <span class="icon" onclick="audio(this.children[0])" style="cursor: pointer">
-          <i  class="fas fa-volume-mute"></i>
-        </span>
-                    <span id="muteun" class="icon-label likes right-label">Muet</span>
+                <div class="icons-item right-icon to-profile" link="{{video.user.username}}">
+                  <span class="icon">
+                      <img id="userpp" src="/media/pdp/{{video.user.photo}}" alt="{{video.user.username}}" class="photo small">
+                  </span>
+                  <span id="user" class="icon-label right-label"></span>
                 </div>
                 <div class="icons-item right-icon">
-        <span class="icon">
-          <i  id="likes-icon" class="fas fa-heart"></i>
-        </span>
-                    <span class="icon-label likes right-label" data-likes='999'>999</span>
+                  <span class="icon" onclick="audio(this.children[0])" style="cursor: pointer">
+                    <i class="fas fa-volume-mute"></i>
+                  </span>
+                  <span id="muteun" class="icon-label right-label">Muet</span>
                 </div>
-                <div class="icons-item right-icon">
-        <span class="icon">
-          <i id="comments-icon" class="fas fa-comments"></i>
-        </span>
-                    <span class="icon-label comments right-label"></span>
+                <div class="icons-item right-icon" onclick="like()">
+                  <span class="icon likesicon {% if video.liked %}active{% endif %}">
+                    <i id="likes-icon" class="fas fa-heart"></i>
+                  </span>
+                  <span class="icon-label likes right-label">{{video.likes_count}}</span>
+                </div>
+                <div class="icons-item right-icon" onclick="activateComments()">
+                  <span class="icon">
+                    <i id="comments-icon" class="fas fa-comment-alt-lines"></i>
+                  </span>
+                  <span class="icon-label comments right-label">{{video.comment_count}}</span>
                 </div>
                 <div class="icons-item right-icon" onclick="share()" style="cursor: pointer;">
-        <span class="icon">
-          <i class="fas fa-share"></i>
-        </span>
-                    <span class="icon-label shares right-label">Partager</span>
+                  <span class="icon">
+                    <i class="fas fa-share-alt"></i>
+                  </span>
+                  <span class="icon-label shares right-label">Partager</span>
                 </div>
-
+                <div class="icons-item right-icon" onclick="more()" style="cursor: pointer;">
+                  <span class="icon">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </span>
+                  <span class="icon-label shares right-label">Plus</span>
+              </div>
             </div>
 
-            <!--  bottom labels  -->
-            <div class="bottom">
-                <span class="progress-duration"></span>
-                <div class="progress-range" title="seek">
-                    <div class="progress-bar"></div>
+            <div class="bottom for-video">
+              <span class="video-infos">
+                <div class="user to-profile" link="{{video.user.username}}">
+                  {{video.user.username}}{% if video.user.certified %}&nbsp;<i class="fas fa-badge-check"></i>{% endif %}
                 </div>
-                <div class="icons">
-                    <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/home.png" alt="">
-          </span>
-                        <span class="icon-label" onclick="changePage('home')" style="color: #FF6B6B" >Accueil</span>
-                    </div>
-                    <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/search_1.png" alt="">
-          </span>
-                        <span class="icon-label" onclick="changePage('search')" >Rechercher</span>
-                    </div>
-                    <div class="icons-item">
-                        <div class="icons-item-add">
-            <span class="icon" style="display: flex;">
-              <img src=" https://assets.codepen.io/2629920/add.png" alt="">
-            </span>
-                        </div>
-                    </div>
-                    <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/comment.png" alt="">
-          </span>
-                        <span class="icon-label">Messages</span>
-                    </div>
-                    <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/user+%281%29.png" alt="">
-          </span>
-                        <span class="icon-label" onclick="changePage('account')" >Compte</span>
-                    </div>
-                </div>
+                <p class="desc">
+                  {{video.description}}
+                  {% for tag in video.tags %}
+                  #{{tag}}
+                  {% endfor %}
+                </p>
+              </span>
+              <span class="progress-duration"></span>
+              <div class="progress-range" title="Timeline">
+                <div class="progress-bar"></div>
+              </div>
             </div>
+
         </div>
     </div>
     <div id="search" style="display: none">
         <div class="container"></div>
-        <div class="bottom">
-            <span class="progress-duration"></span>
-            <div class="progress-range" title="seek">
-                <div class="progress-bar"></div>
-            </div>
-            <div class="icons">
-                <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/home.png" alt="">
-          </span>
-                    <span class="icon-label" onclick="changePage('home')" >Accueil</span>
-                </div>
-                <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/search_1.png" alt="">
-          </span>
-                    <span class="icon-label" onclick="changePage('search')" style="color: #FF6B6B" >Rechercher</span>
-                </div>
-                <div class="icons-item">
-                    <div class="icons-item-add">
-            <span class="icon" style="display: flex;">
-              <img src=" https://assets.codepen.io/2629920/add.png" alt="">
-            </span>
-                    </div>
-                </div>
-                <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/comment.png" alt="">
-          </span>
-                    <span class="icon-label">Messages</span>
-                </div>
-                <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/user+%281%29.png" alt="">
-          </span>
-                    <span class="icon-label" onclick="changePage('account')" >Compte</span>
-                </div>
-            </div>
-        </div>
     </div>
     <div id="account" style="display: none">
         <div class="container profil">
             <div class="profile">
                 <div class="image">
-                    <img src="/static/assets/trickstok_logo.png" alt="Profil Picture">
+                    <img src="/media/pdp/{{user.photo}}" alt="{{user.username}}" class="photo large">
                 </div>
                 <div class="infos">
-                    <h1>Tricky Tricks Official <i class="fas fa-certificate"></i></h1>
-                    <p>Le compte officiel de Tricky Tricks</p>
+                    <h1>{{user.username}} {% if user.certified %}<i class="fas fa-badge-check"></i>{% endif %}</h1>
+                    <p>{{user.description}}</p>
                 </div>
             </div>
             <div class="videos">
-                <div class="video-card">
-                    <div class="video-header">
-                        <h1>Clean kickflip !</h1>
-                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
-                    </div>
-                    <div class="video-media">
-                        <video src="/static/assets/Clean%20kickflip.mp4"></video>
-                    </div>
+              {% for video in user.videos %}
+              <div class="video-card" onclick="location.href = '/home?video={{video.video_id}}'">
+                <div class="video-media">
+                  <video src="/media/videos/{{video.video_id}}"></video>
                 </div>
-                <div class="video-card">
-                    <div class="video-header">
-                        <h1>Wheep !</h1>
-                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
-                    </div>
-                    <div class="video-media">
-                        <video src="/static/assets/scooter.mp4"></video>
-                    </div>
+                <div class="video-footer">
+                  <p class="desc">
+                    {% if video.description|length > 21 %}
+                    {{video.description[0:17]}}...
+                    {% else %}
+                    {{video.description}}
+                    {% endif %}
+                  </p>
+                  <p class="views"><i class="fas fa-eye"></i>&nbsp;{{video.views}}</p>
                 </div>
-                <div class="video-card">
-                    <div class="video-header">
-                        <h1>Triple kaboom</h1>
-                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
-                    </div>
-                    <div class="video-media">
-                        <video src="/static/assets/tramp.mp4"></video>
-                    </div>
-                </div>
-                <div class="video-card">
-                    <div class="video-header">
-                        <h1>Surf clip</h1>
-                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
-                    </div>
-                    <div class="video-media">
-                        <video src="/static/assets/surf-kickflip.mp4"></video>
-                    </div>
-                </div>
-                <div class="video-card">
-                    <div class="video-header">
-                        <h1>Longboard skills</h1>
-                        <h5><img alt="Profil Picture" src="/static/assets/trickstok_logo.png"> Tricky Tricks Official</h5>
-                    </div>
-                    <div class="video-media">
-                        <video src="/static/assets/longboard.mp4"></video>
-                    </div>
-                </div>
-                <div style="height: 14em"></div>
-            </div>
-            <div class="profil-footer" style="padding-top: 5em;">
-                <h3>Profil de Tricky Tricks Official <i class="fas fa-certificate"></i></h3>
-                <p>(Authenticité certifiée)</p>
-            </div>
-        </div>
-        <div class="bottom">
-            <span class="progress-duration"></span>
-            <div class="progress-range" title="seek">
-                <div class="progress-bar"></div>
-            </div>
-            <div class="icons">
-                <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/home.png" alt="">
-          </span>
-                    <span class="icon-label" onclick="changePage('home')" >Accueil</span>
-                </div>
-                <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/search_1.png" alt="">
-          </span>
-                    <span class="icon-label" onclick="changePage('search')" >Rechercher</span>
-                </div>
-                <div class="icons-item">
-                    <div class="icons-item-add">
-            <span class="icon" style="display: flex;">
-              <img src=" https://assets.codepen.io/2629920/add.png" alt="">
-            </span>
-                    </div>
-                </div>
-                <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/comment.png" alt="">
-          </span>
-                    <span class="icon-label">Messages</span>
-                </div>
-                <div class="icons-item">
-          <span class="icon">
-            <img src="https://assets.codepen.io/2629920/user+%281%29.png" alt="">
-          </span>
-                    <span class="icon-label" onclick="changePage('account')" style="color: #FFE66D" >Compte</span>
-                </div>
+              </div>
+              {% endfor %}
             </div>
         </div>
     </div>
+    <div class="bottom">
+      <div class="icons">
+        <div class="icons-item" id="changepagehome" onclick="changePage('home')">
+          <span class="icon">
+            <i class="fas fa-house"></i>
+          </span>
+          <span class="icon-label">Accueil</span>
+        </div>
+        <div class="icons-item" id="changepagesearch" onclick="changePage('search')">
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span class="icon-label">Rechercher</span>
+        </div>
+        <div class="icons-item" id="add">
+          <div class="icons-item-add">
+            <span class="icon is-black" style="display: flex;">
+              <i class="fas fa-plus"></i>
+            </span>
+          </div>
+        </div>
+        <div class="icons-item" id="changepagemessages" onclick="changePage('messages')">
+          <span class="icon">
+            <i class="fas fa-comment-alt-lines"></i>
+          </span>
+          <span class="icon-label">Messages</span>
+        </div>
+        <div class="icons-item" id="changepageaccount" onclick="changePage('account')">
+          <span class="icon">
+            <i class="fas fa-user"></i>
+          </span>
+          <span class="icon-label">Compte</span>
+        </div>
+      </div>
+  </div>
 </div>
+<script src="/static/js/base.js"></script>
 <script>
     let ids = ['search', 'home', 'account']
+    let playPauseIcon = document.getElementById('playpauseicon')
+    let pauseOverlay = document.querySelector('.pause')
+    let overlayMore = document.querySelector('.overlay')
     let number, link;
-    const videos = {{videos['srcs']|safe}};
-    const comments_ids = {{videos['ids']|safe}};
+    var videoID = '{{video.video_id}}'
+    var videoObject = {{video|safe}}
+    const videos = [];
+    const comments_ids = [];
     const videos_length = videos.length;
+
+    function addVideoIDToPath(form, path) {
+        form.action = path + videoID
+        return true
+    }
+
     function changePage(id) {
         for (const id1 of ids) {
             document.getElementById(id1).setAttribute('style', 'display: none');
+            document.getElementById(`changepage${id1}`).classList.remove('active')
         }
         document.getElementById(id).setAttribute('style', '')
+        document.getElementById(`changepage${id}`).classList.add('active')
     }
-    function animdown(src, id) {
+
+    function animdown() {
         video.setAttribute('class', 'video up')
         setTimeout(() => {
-            video.src = src
-            video.id = id
-            loadComments(video.getAttribute('id'))
-        }, 450)
-        setTimeout(() => {
             video.setAttribute('class', 'video')
         }, 900)
     }
-    function animup(src, id) {
+
+    function animup() {
         video.setAttribute('class', 'video down')
         setTimeout(() => {
-            video.src = src
-            video.id = id
-            loadComments(video.getAttribute('id'))
-        }, 450)
-        setTimeout(() => {
             video.setAttribute('class', 'video')
         }, 900)
     }
+
     function swipedown(video=document.querySelector('.video')) {
+        loadNewVideo()
         number = parseInt(video.getAttribute('number')) + 1
         if (videos[number] === undefined) {
             number = 0
         }
-        animdown(videos[number], comments_ids[number])
+        animdown()
         video.setAttribute('number', number)
+        video.setAttribute('id', comments_ids[number])
     }
     function swipeup(video=document.querySelector('.video')) {
         number = parseInt(video.getAttribute('number')) - 1
         if (videos[number] === undefined) {
             number = videos_length - 1
         }
-        animup(videos[number], comments_ids[number])
+        animup()
         video.setAttribute('number', number)
+        video.setAttribute('id', comments_ids[number])
     }
-    const swiper = new Swipe(document.querySelector('.video'))
+
+    const swiper = new Swipe(document.querySelector('#home'))
     swiper.onDown(swipeup)
     swiper.onUp(swipedown)
     swiper.run()
+
+    function changePause(icon, persistant) {
+        playPauseIcon = document.getElementById('playpauseicon')
+        if (persistant) {
+            playPauseIcon.classList = icon
+            pauseOverlay.classList.add('active')
+            return
+        }
+        playPauseIcon.classList = icon
+        pauseOverlay.classList.add('active')
+        setTimeout(() => {
+            pauseOverlay.classList.remove('active')
+        }, 900)
+    }
+
     function audio(obj) {
         if (video.muted) {
             video.muted = false;
@@ -347,13 +297,39 @@
             document.getElementById('muteun').innerHTML = 'Muet'
         }
     }
-    function share() {
-        link = window.location.method + window.location.host + `/video/${comments_ids[parseInt(video.getAttribute('number'))]}`
-        navigator.share({
-            title: `Tricky Tricks, vidéo ${video.src} !`,
-            text: 'Va checker cette vidéo elle est super bien !',
-            url: link
-        })
+
+    async function share() {
+        link = window.location.method + window.location.host + `/home?video=${video.getAttribute('src')}`
+        if (navigator.canShare) {
+            const data = {
+                title: `TricksTok, vidéo ${video.src} !`,
+                text: 'Va checker cette vidéo elle est super bien !',
+                url: link
+            }
+            navigator.share(data)
+        } else {
+            navigator.clipboard.writeText(`TricksTok, \n\n${link}`);
+            alert('Lien copié dans le presse papier !')
+        }
+    }
+
+    function more() {
+        pause(true)
+        overlayMore.classList.add('active')
+    }
+    function moreClose() {
+        overlayMore.classList.remove('active')
+        pause()
+    }
+
+    window.addEventListener('load', () => {
+        if (ids.includes(window.location.hash.replace('#', ''))) {
+            changePage(window.location.hash.replace('#', ''))
+        }
+    })
+
+    function fullScreen() {
+        document.documentElement.requestFullscreen().then(r => console.log(r)).catch(e => console.warn(e))
     }
 </script>
 {% endblock %}

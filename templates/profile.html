@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Profil de {{profile.username}}{% endblock %}
+{% block content %}
+<div id="all">
+  <div class="container profil">
+    <div class="profile">
+      <div class="image">
+        <img src="/media/pdp/{{profile.photo}}" alt="{{profile.username}}" class="photo large">
+      </div>
+      <div class="infos">
+        <h1>{{profile.username}} {% if profile.certified %}<i class="fas fa-badge-check"></i>{% endif %}</h1>
+        <p>{{profile.description}}</p>
+      </div>
+    </div>
+    <div class="videos">
+      {% for video in videos %}
+      <div class="video-card" onclick="location.href = '/home?video={{video.video_id}}'">
+        <div class="video-media">
+          <video src="/media/videos/{{video.video_id}}"></video>
+        </div>
+        <div class="video-footer">
+          <p class="desc">
+            {% if video.description|length > 21 %}
+            {{video.description[0:17]}}...
+            {% else %}
+            {{video.description}}
+            {% endif %}
+          </p>
+          <p class="views"><i class="fas fa-eye"></i>&nbsp;{{video.views}}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="icons">
+      <div class="icons-item" id="changepagehome" onclick="changePage('home')">
+        <span class="icon">
+          <i class="fas fa-house"></i>
+        </span>
+        <span class="icon-label">Accueil</span>
+      </div>
+      <div class="icons-item" id="changepagesearch" onclick="changePage('search')">
+        <span class="icon">
+          <i class="fas fa-search"></i>
+        </span>
+        <span class="icon-label">Rechercher</span>
+      </div>
+      <div class="icons-item" id="add">
+        <div class="icons-item-add">
+          <span class="icon is-black" style="display: flex;">
+            <i class="fas fa-plus"></i>
+          </span>
+        </div>
+      </div>
+      <div class="icons-item" id="changepagemessages" onclick="changePage('messages')">
+        <span class="icon">
+          <i class="fas fa-comment-alt-lines"></i>
+        </span>
+        <span class="icon-label">Messages</span>
+      </div>
+      <div class="icons-item" id="changepageaccount" onclick="changePage('account')">
+        <span class="icon">
+          <i class="fas fa-user"></i>
+        </span>
+        <span class="icon-label">Compte</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    function changePage(id) {
+        location.href = `/home#${id}`
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Add a Post{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tagsinput@1.0.3/dist/css/bulma-tagsinput.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tagsinput@1.0.3/dist/js/bulma-tagsinput.min.js"></script>
+<div id="all">
+    <div class="container add">
+      <section class="section">
+        <form action="/post" method="post" enctype="multipart/form-data">
+          <h2 class="title  is-2">Poster une vidéo</h2>
+          <p class="subtitle is-6">Partage ta passion pour les sports extrêmes !</p>
+
+          <div class="field">
+            <label class="label">Vidéo</label>
+            <p id="video-label"></p>
+            <div class="file">
+              <label class="file-label">
+                <input class="file-input" type="file" name="video" accept="video/quicktime,video/mp4,video/mpeg" id="video" required>
+                <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fad fa-video"></i>
+                </span>
+                <span class="file-label">
+                  Choisir une vidéo
+                </span>
+              </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label"><i class="fad fa-align-left"></i>&nbsp;Description</label>
+            <div class="control">
+              <input class="input" name="desc" type="text" placeholder="Des gros tricks au skatepark..." required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label"><i class="fad fa-hashtag"></i>&nbsp;Tags</label>
+            <div class="control">
+              <input class="input" type="text" data-type="tags" data-max-tags="3" placeholder="bmx, cliff, freestyle" name="tags">
+            </div>
+          </div>
+
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" type="submit">Mettre en ligne la vidéo</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+  <div class="bottom">
+    <div class="icons">
+      <div class="icons-item" id="changepagehome" onclick="changePage('home')">
+        <span class="icon">
+          <i class="fas fa-house"></i>
+        </span>
+        <span class="icon-label">Accueil</span>
+      </div>
+      <div class="icons-item" id="changepagesearch" onclick="changePage('search')">
+        <span class="icon">
+          <i class="fas fa-search"></i>
+        </span>
+        <span class="icon-label">Rechercher</span>
+      </div>
+      <div class="icons-item" id="add" style="scale: 1.2">
+        <div class="icons-item-add">
+          <span class="icon is-black" style="display: flex;">
+            <i class="fas fa-plus"></i>
+          </span>
+        </div>
+      </div>
+      <div class="icons-item" id="changepagemessages" onclick="changePage('messages')">
+        <span class="icon">
+          <i class="fas fa-comment-alt-lines"></i>
+        </span>
+        <span class="icon-label">Messages</span>
+      </div>
+      <div class="icons-item" id="changepageaccount" onclick="changePage('account')">
+        <span class="icon">
+          <i class="fas fa-user"></i>
+        </span>
+        <span class="icon-label">Compte</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    let video = document.getElementById('video')
+    let label = document.getElementById('video-label')
+    let file
+    BulmaTagsInput.attach()
+
+    video.addEventListener('change', changeLabel)
+
+    function changeLabel(event) {
+        if (event.target.files && event.target.files[0]) {
+            label.innerText = event.target.files[0].name
+        }
+    }
+
+    function changePage(id) {
+        location.href = `/home#${id}`
+    }
+</script>
+{% endblock %}

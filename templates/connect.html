@@ -5,64 +5,47 @@
     <title>TricksTok, se connecter / s'enregistrer</title>
     <link rel="stylesheet" href="/static/css/form.css">
     <script src="https://kit.fontawesome.com/628c8d2499.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<h2>TricksTok, Se connecter</h2>
-<div class="container" id="container">
-    <div class="form-container sign-up-container">
-        <form action="#">
-            <h1>Créé un compte</h1>
-            <div class="social-container">
-                <a onclick="alert('Pas encore disponible, désolé :( !')" href="#" class="social"><i class="fab fa-tiktok"></i></a>
-            </div>
-            <span>ou utilisez une adresse mail</span>
-            <input type="text" placeholder="Name" />
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <button style="border: 1px solid #FFE66D; background-color: #FFE66D; color: #000;">S'enregistrer</button>
-        </form>
-    </div>
-    <div class="form-container sign-in-container">
-        <form action="#">
-            <h1>Se connecter</h1>
-            <div class="social-container">
-                <a onclick="alert('Pas encore disponible, désolé :( !')" href="#" class="social"><i class="fab fa-tiktok"></i></a>
-            </div>
-            <span>ou utilisez un email</span>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <a href="#">Mot de passe oublié?</a>
-            <button>Se connecter</button>
-        </form>
-    </div>
-    <div class="overlay-container">
-        <div class="overlay">
-            <div class="overlay-panel overlay-left">
-                <h1>Bonjour, prêt à devenir un Treecker !</h1>
-                <p>Entrez vos informations et rejoignez les Treeckers !</p>
-                <button class="ghost" id="signIn">Déjà un compte ? Se connecter</button>
-            </div>
-            <div class="overlay-panel overlay-right">
-                <h1>Re bienvenue Treecker !</h1>
-                <p>Connectez vous avec votre compte Tricky Tricks</p>
-                <button class="ghost" id="signUp">Pas de compte ? S'enregistrer</button>
+<form method="post" action="/login">
+    <section class="section has-padding">
+        <h2 class="title is-2">TricksTok, Se connecter</h2>
+        <p class="subtitle is-6">Rebonjour jeune tricker.</p>
+
+        <div class="content has-text-centered">
+            <a class="has-test-grey" href="/reg">S'enregistrer</a>
+            -
+            <a class="has-test-grey" href="/cgu">CGU</a>
+        </div>
+
+        <div class="field">
+            <label class="label">Nom d'utilisateur</label>
+            <div class="control has-icons-left">
+                <input class="input is-success" type="text" placeholder="johndoe" pattern="^[a-z0-9_.]+$" name="username" required>
+                <span class="icon is-small is-left">
+              <i class="fas fa-at"></i>
+            </span>
             </div>
         </div>
-    </div>
-</div>
-<script>
-    const signUpButton = document.getElementById('signUp');
-    const signInButton = document.getElementById('signIn');
-    const container = document.getElementById('container');
 
-    signUpButton.addEventListener('click', () => {
-        container.classList.add("right-panel-active");
-    });
+        <div class="field">
+            <label class="label">Password</label>
+            <div class="control has-icons-left">
+                <input class="input" type="password" placeholder="******" name="password" required>
+                <span class="icon is-small is-left">
+              <i class="fas fa-key"></i>
+            </span>
+            </div>
+        </div>
 
-    signInButton.addEventListener('click', () => {
-        container.classList.remove("right-panel-active");
-    });
-</script>
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-link" type="submit">Se connecter</button>
+            </div>
+        </div>
+    </section>
+</form>
 </body>
 </html>

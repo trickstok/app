@@ -1,36 +1,45 @@
-let likesAmount = "";
+let tag, tags_string, html, username
+
 var video = document.querySelector(".video");
 video.onchange = function () {
     video = document.querySelector('.video')
 }
+var history = []
+
 const duration = document.querySelector(".progress-duration");
 const range = document.querySelector(".progress-range");
 const bar = document.querySelector(".progress-bar");
+
+const description = document.querySelector('.video-infos .desc')
+const user = document.querySelector('.video-infos .user')
+const userPp = document.querySelector('#userpp')
+const likes = document.querySelector('.icon-label.likes')
+const comment = document.querySelector('.icon-label.comments')
+const to_profile = document.querySelectorAll('.to-profile')
+
+function open(el) {
+    username = el.getAttribute('link')
+    location.href = `/u/${username}`
+}
+
+to_profile.forEach(el => {
+    el.addEventListener('click', () => {
+        open(el)
+    })
+})
+
 const commentsCount = document.querySelector(".comments-head-label");
 const commentsCount2 = document.querySelector(".comments");
 
 const commentsList = document.querySelector(".comments-list");
-
-// overlay
-
-const overlay = document.querySelector(".overlay");
-const closeOvelay = document.querySelector(".howto-close");
-
-//
 const commentsIcon = document.getElementById("comments-icon");
 const commentsContainer = document.querySelector(".comments-container");
-const closeComments = document.querySelector(".comments-head-close");
+const closeComments = document.querySelector(".comments-head");
 
 //
 
-const likes = document.querySelector(".likes");
-const likesIcon = document.getElementById("likes-icon");
-
-// iife
-
-(() => {
-    video.pause();
-})();
+const likesIcon = document.querySelector('.likesicon')
+const addButton = document.getElementById('add');
 
 function displayTime(time) {
     const mins = Math.floor(time / 60); // devide (time | given) by 60 (mins)
@@ -56,51 +65,120 @@ function setProgress(e) {
 
 function activateComments() {
     commentsContainer.classList.add("comments-active");
-    video.pause();
-    if (video.pause) {
-        video.style.cursor = "pointer";
-    }
+    pause(true)
+    video.style.cursor = "pointer";
 }
 function deactivateComments() {
-    if (video.pause) {
-        commentsContainer.classList.remove("comments-active");
+    pause()
+    commentsContainer.classList.remove("comments-active");
+    video.style.cursor = "default";
+
+}
+
+// function loadComments(id=video.id) {
+//     fetch(`/get-comments/${id}`
+//     )
+//         .then((response) => {
+//             return response.json();
+//         })
+//         .then((comments) => {
+//             commentsList.innerHTML = "";
+//             commentsCount.textContent = `${comments.length} commentaires`;
+//             commentsCount2.textContent = `${comments.length}`;
+//             comments.forEach((comment) => {
+//                 const html = `<div class="comments-item">
+//           <span class="comment-top">
+//             <span class="comment-top-logo" style="background-image:url(${comment.profilePhoto})"></span>
+//             <span class="comment-top-details">
+//               <span class="user-name">${comment.userName}</span>
+//               <span class="user-time">${comment.timePosted}</span>
+//               <span class="user-comment">${comment.comment}</span>
+//             </span>
+//           </span>
+//         </div>`;
+//                 commentsList.insertAdjacentHTML("afterbegin", html);
+//             });
+//         });
+//     likesAmount = 999;
+//     likesIcon.setAttribute('style', '')
+//     likes.textContent = `${likesAmount === 1000 ? "1K": likesAmount}`;
+//     nametest = document.querySelector('.user-name').innerHTML;
+//     if (nametest.length >= maxNameLen) {
+//         nametest = nametest.split('').slice(0, maxNameLen - 3).join('') + '...'
+//     }
+//     userName.innerHTML = '@' + nametest
+//     userPP.src = '/randompp'
+// }
+
+function pause(forcePause=false) {
+    if (forcePause) {
+        video.pause();
+        changePause('fa-pause fa-2x', true)
+    } else if (video.paused) {
+        changePause('fa-play fa-2x', false)
         video.play();
-        video.style.cursor = "default";
+    } else {
+        video.pause();
+        changePause('fa-pause fa-2x', true)
     }
 }
 
-function loadComments(id=video.id) {
-    fetch(`/get-comments/${id}`
-    )
-        .then((response) => {
-            return response.json();
-        })
-        .then((comments) => {
-            commentsList.innerHTML = "";
-            commentsCount.textContent = `${comments.length} commentaires`;
-            commentsCount2.textContent = `${comments.length}`;
-            comments.forEach((comment) => {
-                const html = `<div class="comments-item">
-          <span class="comment-top">
-            <span class="comment-top-logo" style="background-image:url(${comment.profilePhoto})"></span>
-            <span class="comment-top-details">
-              <span class="user-name">${comment.userName}</span>
-              <span class="user-time">${comment.timePosted}</span>
-              <span class="user-comment">${comment.comment}</span>
-            </span>
-          </span>
-        </div>`;
+function loadNewVideo() {
+
+    fetch(`/watch`)
+        .then(resp => resp.json())
+        .then(data => {
+            console.log(data)
+            likesIcon.classList.remove('active')
+            videoObject = data.data
+            if (videoObject.liked) {
+                likesIconAnim
+                likesIcon.classList.add('active')
+            }
+            history.push(videoObject)
+            videoID = videoObject.video_id
+            video.setAttribute('data-id', videoID)
+            tags_string = ''
+            for (tag of videoObject.tags) {
+                tags_string += `#${tag} `
+            }
+            description.innerText = `${videoObject.description} ${tags_string}`
+            user.innerText = `${videoObject.user.username}`
+            if (videoObject.user.certified) {
+                user.innerHTML += '&nbsp;<i class="fas fa-badge-check"></i>'
+            }
+            userPp.src = `/media/pdp/${videoObject.user.photo}`
+            to_profile.forEach(el => {
+                el.setAttribute('link', videoObject.user.username)
+            })
+            likes.innerText = videoObject.likes_count
+            commentsCount.innerText = `${videoObject.comment_count} commentaires`
+            commentsCount2.innerText = videoObject.comment_count
+            for (comment of videoObject.comments) {
+                html = `<div class="comments-item">
+                          <span class="comment-top">
+                            <span class="comment-top-logo" style="background-image:url(/media/pdp/${comment.user.photo})"></span>
+                            <span class="comment-top-details">
+                              <span class="user-name">${comment.user.fullname}</span>
+                              <span class="user-time">${comment.user.username}</span>
+                              <span class="user-comment">${comment.content}</span>
+                            </span>
+                          </span>
+                        </div>`
                 commentsList.insertAdjacentHTML("afterbegin", html);
-            });
-            likesAmount = Number(likes.dataset.likes);
-        });
+            }
+            video.src = `/media/videos/${videoID}`
+        })
 }
 
-function updateLikes() {
-    if (likesAmount >= 1000) return;
-    likesIcon.src = `https://assets.codepen.io/2629920/heart+%281%29.png`;
-    likesAmount = likesAmount + 1;
-    likes.textContent = `${likesAmount === 1000 ? "1K" : likesAmount}`;
+function like() {
+    if (videoObject.liked) {
+        likesIcon.classList.remove('active')
+        fetch(`/unlike/${videoID}`)
+    } else {
+        likesIcon.classList.add('active')
+        fetch(`/like/${videoID}`)
+    }
 }
 
 // Event listeners
@@ -108,15 +186,13 @@ function updateLikes() {
 range.addEventListener("click", setProgress);
 video.addEventListener("timeupdate", updateProgress);
 video.addEventListener("canplay", updateProgress);
+video.addEventListener('dblclick', like)
+video.addEventListener('click', () => {
+    pause()
+})
 commentsIcon.addEventListener("click", activateComments);
-video.addEventListener("click", deactivateComments);
 closeComments.addEventListener("click", deactivateComments);
-likesIcon.addEventListener("click", updateLikes);
-closeOvelay.addEventListener("click", () => {
-    video.play();
-    overlay.style.display = "none";
-});
-
-// on load
-
-loadComments();
+likesIcon.addEventListener("click", like);
+addButton.addEventListener('click', () => {
+    location.href = '/add'
+})
