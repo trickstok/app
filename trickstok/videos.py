@@ -8,6 +8,18 @@ class Videos(DatabaseObject):
         super().__init__(user, password, url)
         self.db = self.collection
 
+    @property
+    def total(self):
+        return self.db.videos.count_documents({})
+
+    @property
+    def total_views(self):
+        return self.db.views.count_documents({})
+
+    @property
+    def total_reports(self):
+        return self.db.reports.count_documents({})
+
     def add(self, user, description, tags, video_id):
         self.db.videos.insert_one({
             "user": user,
@@ -17,10 +29,11 @@ class Videos(DatabaseObject):
         })
 
     def get_reported(self):
-        reported = self.db.reports.find()
+        reported = self.db.reports.find({})
         for report in reported:
-            report['video'] = self.find_by_id(report['video'])
-        return reported
+            report['video'] = self.find_by_object_id(report['video'])
+            report['user'] = self.db.users.find_one({'_id': report['user']})
+        return list(reported)
 
     def find_by_object_id(self, _id):
         return Video(self.db.videos.find_one({"_id": ObjectId(_id)}), self.db)
@@ -43,7 +56,7 @@ class Videos(DatabaseObject):
 
     def find_not_viewed_by_user(self, _id, in_list=False):
         viewed = self.find_viewed_by_user(_id, True)
-        not_viewed = self.db.videos.find({'_id': {"$not": {"$in": [viewed]}}})
+        not_viewed = self.db.videos.find({'_id': {"$not": {"$in": viewed}}})
         if not in_list:
             return [Video(self.db.videos.find({"_id": not_view['_id']}), self.db).video for not_view in not_viewed]
         return [not_view['_id'] for not_view in not_viewed]
@@ -53,7 +66,7 @@ class Videos(DatabaseObject):
         viewed = self.find_viewed_by_user(_id, True)
         not_viewed = []
         for interest in user_interests:
-            not_viewed.insert(self.db.videos.find({'_id': {"$not": {"$in": [viewed]}}, '$text': {'$search': interest}}))
+            not_viewed.append(self.db.videos.find({'_id': {"$not": {"$in": [viewed]}}, '$text': {'$search': interest}}))
         if not in_list:
             return [Video(self.db.videos.find({"_id": not_view['_id']}), self.db).video for not_view in not_viewed]
         return [not_view['_id'] for not_view in not_viewed]
@@ -102,10 +115,14 @@ class Video:
         self.video['likes_count'] = self.db.views.count_documents({"video": self.video['_id'], "liked": True})
         self.video['views'] = self.db.views.count_documents({"video": self.video['_id']})
         self.video_object_id = video['_id']
+        if self.video['user']['banned'] != False:
+            self.video['video_id'] = 'banned.mp4'
         del self.video['_id']
         del self.video['user']['token']
         del self.video['user']['password']
         del self.video['user']['_id']
+        del self.video['user']['ban_history']
+        del self.video['user']['banned']
 
     def add_comment(self, comment, user_id):
         self.db.comments.insert_one({
@@ -139,6 +156,7 @@ class Video:
             user = self.db.users.find_one({'_id': comment['user']})
             del user['password']
             del user['token']
+            del user['ban_history']
             del comment['_id']
             user['_id'] = str(user['_id'])
             comment["user"] = user

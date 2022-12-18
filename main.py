@@ -1,11 +1,13 @@
 import datetime
 import locale
+import os
 import re
 import secrets
 import sys
 
 import conf
 import flask
+import markdown
 from flask import Flask, request, redirect, render_template, make_response, send_file, Response
 from trickstok import Users, Videos, Mailer, Template
 
@@ -16,6 +18,7 @@ users = Users(**db_conf, salt=configuration['App']['secret'])
 videos = Videos(**db_conf)
 mails = Mailer(**db_conf)
 templates = Template()
+mailing_lists = configuration['App']['mailing_lists'].split(',')
 app = Flask('Tricks Tok, The TikTok of Tricks')
 
 
@@ -46,6 +49,46 @@ def presentation():
     return render_template('landing.html')
 
 
+@app.route('/licence')
+def licence():
+    return send_file('LICENSE')
+
+
+def get_article(name):
+    post_file = open(f'blog/{name}')
+    content = "".join(post_file.readlines()[1:])
+    content = markdown.markdown(content)
+    post_file.seek(0)
+    meta_datas = post_file.readline()
+    date, title, cover = meta_datas.split(';')
+    day, month, year = date.split('-')
+    date = datetime.datetime(year=int(year), month=int(month), day=int(day)).strftime("%A %-d %B")
+    return {'title': title, 'date': date, 'content': content, 'cover': cover, 'name': name.split('.')[0]}
+
+
+def get_articles():
+    all_posts = os.listdir('blog/')
+    articles = []
+    for post in all_posts:
+        if os.path.isfile(f'blog/{post}') and not 'draft' in post:
+            articles.append(get_article(post))
+    return articles
+
+
+@app.route('/blog')
+def blog():
+    if request.args.get('post') is None:
+        articles = get_articles()
+        return render_template('blog_index.html', articles=articles)
+    post = request.args.get('post')
+    if os.path.isfile(f'blog/{post}.md'):
+        article = get_article(f'{post}.md')
+    else:
+        article = {'title': "Erreur 404; Article introuvable", 'date': "Erreur 404; Article introuvable", "content": "<h1>404 article introuvable</h1><br><p>Cet article à été déplacé ou supprimé...</p>", 'cover': "/static/assets/posts/404.png"}
+    articles = get_articles()
+    return render_template('blog.html', **article, articles=articles)
+
+
 @app.route('/home')
 def home():
     logged, user = is_logged()
@@ -61,6 +104,15 @@ def home():
     if logged:
         return auth('index.html', video=videos.random(user['_id']).video)
     return redirect('/log')
+
+
+@app.route('/prelogin', methods=['POST'])
+def beta_access():
+    form = request.form
+    email = form['email']
+    content = templates.base.format(email=email, content=templates.betalog)
+    mails.add_to_list(email, 'beta', mails.send_mail, args={"to": email, "subject": 'Tu a bien été préinscris !', "content": content})
+    return redirect('/')
 
 
 @app.route('/admin')
@@ -96,6 +148,21 @@ def moderation_users():
                 user = users.find_by_username(username)
                 return auth('admin_users.html', result=user)
             return auth('admin_users.html', result=None)
+    return redirect('/log')
+
+
+@app.route('/admin/mails')
+def moderation_mails():
+    logged, user = is_logged()
+    if logged:
+        if user['administrator']:
+            campagnes = mailing_lists
+            total = mails.total
+            mailing_campagnes = []
+            for liste in campagnes:
+                emails = list(mails.get_list_mails(liste))
+                mailing_campagnes.append({'name': liste, 'mails': emails, 'number': len(emails)})
+            return auth('admin_mails.html', campagnes=mailing_campagnes, total=total)
     return redirect('/log')
 
 

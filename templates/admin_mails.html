@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administration - Trickstok</title>
+  <script src="https://kit.fontawesome.com/628c8d2499.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/form.css">
+</head>
+
+<body>
+
+<div class="container">
+  <div class="columns">
+    <div class="column is-3 ">
+      <aside class="menu is-hidden-mobile">
+        <p class="menu-label">
+          TricksTok
+        </p>
+        <ul class="menu-list">
+          <li>
+            <li>
+              <a class="is-active">Administration</a>
+              <ul>
+                <li><a href="/">Vue d'ensemble</a></li>
+                <li><a href="/admin/users">Scan utilisateurs</a></li>
+              </ul>
+            </li>
+          </li>
+          <li><a href="/">Site web</a></li>
+          <li><a href="/admin/mails" class="is-active">Campagnes email</a></li>
+        </ul>
+        <p class="menu-label">
+          Network
+        </p>
+        <ul class="menu-list">
+          <li><a href="https://grafana.trickstok.server.camarm.fr">Grafana</a></li>
+          <li><a href="https://mail.ovh.net/roundcube">Boîte mail</a></li>
+        </ul>
+      </aside>
+    </div>
+    <div class="column is-9">
+      <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+          <li><a href="">{{user.username}}</a></li>
+          <li><a href="">Administration</a></li>
+          <li class="is-active"><a href="#" aria-current="page">Campagnes emails</a></li>
+        </ul>
+      </nav>
+      <section class="hero is-info welcome is-small">
+        <div class="hero-body">
+          <div class="container">
+            <h1 class="title">
+              Hello, {{user.username}}.
+            </h1>
+            <h2 class="subtitle">
+              Bienvenue sur la page d'administration
+            </h2>
+          </div>
+        </div>
+      </section>
+      <section class="info-tiles">
+        <div class="tile is-ancestor has-text-centered">
+          <div class="tile is-parent">
+            <article class="tile is-child box">
+              <p class="title">{{total}}</p>
+              <p class="subtitle">Emails</p>
+            </article>
+          </div>
+          <div class="tile is-parent">
+            <article class="tile is-child box">
+              <p class="title">{{campagnes|length}}</p>
+              <p class="subtitle">Campagnes</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <div class="columns">
+        <div class="column is-full">
+          <div class="card events-card">
+            <header class="card-header">
+              <p class="card-header-title">
+                Campagnes
+              </p>
+              <a href="#" class="card-header-icon" aria-label="more options">
+                  <span class="icon">
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                  </span>
+              </a>
+            </header>
+            <div class="card-table">
+              <div class="content">
+                <table class="table is-fullwidth is-striped">
+                  <tbody>
+                  {% for liste in campagnes %}
+                  <tr>
+                    <td><i class="fa fa-bell-o"></i></td>
+                    <td>{{liste.name}}, {{liste.mails|length}} emails</td>
+                    <td class="level-right emails-lists is-hidden">
+                      {% for email in liste.mails %}
+                      {{email.mail}}<br>
+                      {% endfor %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <a href="#" class="card-footer-item" onclick="document.querySelectorAll('.emails-lists').forEach(el => {el.classList.toggle('is-hidden')})">Voir tous les emails</a>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<script async type="text/javascript" src="../js/bulma.js"></script>-->
+</body>
+
+</html>
