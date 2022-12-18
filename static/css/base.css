@@ -103,6 +103,7 @@ html {
 
 @keyframes red-dot {
     0% {
+
         transform: translate(0, 0);
     }
     14.3% {
@@ -607,6 +608,59 @@ strong {
     cursor: pointer;
 }
 
+.container.messages {
+    display: flex;
+    padding-top: 1em;
+    flex-direction: column;
+    background: var(--primary);
+}
+
+.chats {
+    display: flex;
+    flex-direction: column;
+    width: 98%;
+}
+
+.conversation {
+    width: 100%;
+    display: flex;
+    padding-left: .5em;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    border-bottom: 2px solid #4a4a4a;
+    border-top: 2px solid #4a4a4a;
+}
+
+.conversation .image img:not(.no-rounded) {
+    box-sizing: content-box;
+    padding-right: 1em;
+    height: 2.5em !important;
+    width: 2.5em;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.conversation .image img.no-rounded {
+    box-sizing: content-box;
+    padding-right: 1em;
+    width: 2.5em;
+}
+
+.conversation .infos {
+    display: flex;
+    flex-direction: column;
+}
+.fa-bell-on svg path {
+    color: var(--red)
+}
+
+.conversation .infos .name {
+    font-weight: bold;
+}
+.conversation .infos .last_message {
+    font-size: .8em;
+}
+
 @keyframes up {
     0% {
         margin-bottom: 0;
@@ -800,6 +854,25 @@ strong {
     width: 100%;
 }
 
+large-screen {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary);
+}
+
+@media (min-width: 950px) {
+    large-screen {
+        display: flex;
+    }
+
+    #all {
+        display: none;
+    }
+}
+
 @keyframes pulsate1 {
     0% {
         border: 5px solid #FF6B6B;
@@ -823,6 +896,5 @@ strong {
     }
     body {
         /*overflow: hidden;*/
-        max-height: 0 !important;
     }
 }

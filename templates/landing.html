@@ -5,13 +5,23 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Landing - Free Bulma template</title>
+  <title>TricksTok, Bienvenue</title>
   <link rel="shortcut icon" href="/static/assets/trickstok_logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://kit.fontawesome.com/628c8d2499.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
   <link rel="stylesheet" type="text/css" href="/static/css/landing.css">
   <link rel="stylesheet" type="text/css" href="/static/css/form.css">
+  <meta property="og:title" content="TricksTok, L'application des pasionnés de spors extrêmes !"/>
+  <meta property="og:site_name" content="TricksTok, L'application des pasionnés de spors extrêmes !"/>
+  <meta property="og:url" content="https://trickstok.tk"/>
+  <meta property="og:description" content="TricksTok est l'application qu'il te faut en tan que passionné de sports extrêmes."/>
+  <meta property="og:image" content="https://trickstok.tk/static/assets/banner.png"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:keywords" content="tricks,tiktok,trickstok,skate,surf,skatepark,trot,trotinnette,roller,kate"/>
+  <meta property="twitter:card" content="summary_large_image">
+  <meta name="keywords" content="tricks,tiktok,trickstok,skate,surf,skatepark,trot,trotinnette,roller,kate"/>
+  <meta name="theme-color" content="#4c7bfe">
 </head>
 <body>
 <section class="hero is-fullheight is-info">
@@ -19,8 +29,8 @@
     <nav class="navbar">
       <div class="container">
         <div class="navbar-brand">
-          <a class="navbar-item" href="../">
-            <img src="http://bulma.io/images/bulma-type-white.png" alt="Logo">
+          <a class="navbar-item" href="/">
+            <img src="/static/assets/trickstok_logo_large_white.png" alt="Logo TricksTok">
           </a>
           <span class="navbar-burger burger" data-target="navbarMenu">
             <span></span>
@@ -33,23 +43,39 @@
             <span class="navbar-item">
               <a class="button is-white is-outlined" href="/home">
                 <span class="icon">
-                  <i class="fa fa-home"></i>
+                  <i class="fas fa-browser"></i>
                 </span>
                 <span>Ouvrir l'application</span>
               </a>
             </span>
             <span class="navbar-item">
+              <a class="button is-white is-outlined" href="/blog">
+                <span class="icon">
+                  <i class="fas fa-newspaper"></i>
+                </span>
+                <span>Actualités</span>
+              </a>
+            </span>
+            <span class="navbar-item">
+              <a class="button is-white is-outlined" href="https://support.camarm.fr/newissue" target="_blank">
+                <span class="icon">
+                  <i class="fas fa-user-headset"></i>
+                </span>
+                <span>Support</span>
+              </a>
+            </span>
+            <span class="navbar-item">
               <a class="button is-white is-outlined" href="#">
                 <span class="icon">
-                  <i class="fa fa-book"></i>
+                  <i class="fas fa-download"></i>
                 </span>
-                <span>Documentation</span>
+                <span>Télécharger l'application</span>
               </a>
             </span>
             <span class="navbar-item">
               <a class="button is-white is-outlined" href="https://gitlab.com/comtelabs/tricks-tok">
                 <span class="icon">
-                  <i class="fa fa-github"></i>
+                  <i class="fab fa-gitlab"></i>
                 </span>
                 <span>Code source</span>
               </a>
@@ -67,19 +93,20 @@
           Coming Soon
         </h1>
         <h2 class="subtitle">
-          TricksTok est l'application qu'il te faut en tant que passioné de sports freestyle/extrêmes !<br> Pré inscris-toi si-dessous:
+          TricksTok est l'application qu'il te faut en tant que passioné de sports freestyle/extrêmes !<br> Pré inscris-toi à la beta si dessous:
         </h2>
         <div class="box">
           <form action="/prelogin" method="post">
             <div class="field is-grouped">
               <p class="control is-expanded">
-                <input class="input" type="text" placeholder="my@email.com">
+                <input class="input" type="text" placeholder="my@email.com" name="email">
               </p>
               <p class="control">
-                <a class="button is-third">
+                <button class="button is-third" type="submit" role="button">
                   Notifiez moi
-                </a>
+                </button>
               </p>
+<!--              <p class="help"><a href="/blog/beta">Plus d'infos sur les préinscriptions</a></p>-->
             </div>
           </form>
         </div>
@@ -88,6 +115,18 @@
   </div>
 
 </section>
+
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+      <strong>Trickstok</strong> par <a href="https://www.camarm.dev">camarm</a>. Le code source est sous licence
+      <a href="/licence">CeCill</a>. Les logos et image de TricksTok sont
+      sous licence <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+      <br>
+      Page d'accueil (<a href="https://trickstok.tk/">https://trickstok.tk/</a>) et de blog <a href="https://trickstok.tk/blog">https://trickstok.tk/blog</a> par <a href="https://bulmatemplates.github.io/bulma-templates/" target="_blank">bulmatemplates.github.io</a>
+    </p>
+  </div>
+</footer>
 <script async type="text/javascript">
     (function() {
         var burger = document.querySelector('.burger');

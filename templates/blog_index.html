@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TricksTok, Blog</title>
+  <link rel="shortcut icon" href="/static/assets/trickstok_logo.png" type="image/x-icon">
+  <script src="https://kit.fontawesome.com/628c8d2499.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+  <link rel="stylesheet" type="text/css" href="/static/css/landing.css">
+</head>
+<body>
+
+<nav class="navbar is-dark">
+  <div class="container">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="/static/assets/trickstok_logo_large_white.png" alt="Logo TricksTok">
+      </a>
+      <span class="navbar-burger burger" data-target="navbarMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-end">
+        <span class="navbar-item">
+          <a class="button is-white is-outlined" href="/home">
+            <span class="icon">
+              <i class="fas fa-browser"></i>
+            </span>
+            <span>Ouvrir l'application</span>
+          </a>
+        </span>
+        <span class="navbar-item">
+          <a class="button is-white is-outlined" href="https://support.camarm.fr/newissue" target="_blank">
+            <span class="icon">
+              <i class="fas fa-user-headset"></i>
+            </span>
+            <span>Support</span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="hero ">
+  <div class="hero-body">
+    <h1 class="title is-1">Les articles</h1>
+    <div class="container grid">
+      {% for post in articles %}
+
+      <div class="content is-medium article" onclick="location.href = '/blog?post={{post.name}}'">
+        <h2 class="subtitle is-5" style="color: var(--third)">{{post.date}}</h2>
+        <h1 class="title is-3">{{post.title}}</h1>
+        <div class="small">
+          {{post.content[0:120]|safe}}...
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+      <strong>Trickstok</strong> par <a href="https://www.camarm.dev">camarm</a>. Le code source est sous licence
+      <a href="/licence">CeCill</a>. Les logos et image de TricksTok sont
+      sous licence <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+      <br>
+      Page d'accueil (<a href="https://trickstok.tk/">https://trickstok.tk/</a>) et de blog <a href="https://trickstok.tk/blog">https://trickstok.tk/blog</a> par <a href="https://bulmatemplates.github.io/bulma-templates/" target="_blank">bulmatemplates.github.io</a>
+    </p>
+  </div>
+</footer>
+<script async type="text/javascript">
+    (function() {
+        var burger = document.querySelector('.burger');
+        var menu = document.querySelector('#'+burger.dataset.target);
+        burger.addEventListener('click', function() {
+            burger.classList.toggle('is-active');
+            menu.classList.toggle('is-active');
+        });
+    })();
+</script>
+</body>
+</html>

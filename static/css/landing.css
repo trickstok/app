@@ -1,4 +1,79 @@
+:root {
+    --primaryBC: #1c1c1c;
+    --primaryBC-trans: rgba(28, 28, 28, 0.86);
+    --range: #ffffff59;
+    --bar: linear-gradient(
+            90deg,
+            #FF6B6B 0%,
+            #F7FFF7 34%,
+            #FFE66D 65%
+    );
+    --bg: linear-gradient(#0d0d0d, var(--primaryBC) 50%);
+    --primary: #F7FFF7;
+    --third: #9f9f9f;
+    --poppins: "Poppins", sans-serif;
+    --blue: #4c7bfe;
+    --red: #FF6B6B;
+    --yellow: #FFE66D;
+}
+
+html, body {
+    font-family: var(--poppins);
+    background: var(--primary);
+}
 .hero.is-fullheight {
     background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://source.unsplash.com/random/?extreme sport') no-repeat center center fixed;;
     background-size: cover;
+}
+
+.footer {
+    background: var(--primary);
+}
+
+a.navbar-item:hover {
+    background: var(--third) !important;
+}
+
+.navbar-item img {
+    max-height: 2.5rem !important;
+}
+
+
+div.small {
+    display: block;
+    max-width: 100%;
+}
+
+div.small h1, div.small h2, div.small h3 {
+    font-size: 1.1em;
+    font-weight: normal;
+    margin: 0 !important;
+}
+
+div.small br {
+    display: inline;
+}
+
+.container.grid {
+    display: grid;
+    grid-gap: 13em;
+    grid-template-columns: repeat(auto-fit, minmax(18em, 0.3fr));
+}
+
+.article {
+    padding: 1em;
+    width: 20em;
+    height: 15em;
+    border: 2px solid var(--third);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: .5s ease-in-out;
+}
+
+.article:hover {
+    box-shadow: 5px 5px 0 var(--third);
+}
+
+.navbar.is-dark {
+    background: var(--primaryBC-trans);
 }

@@ -8,8 +8,8 @@ class Template:
 
     base = """
     <body>
-    Bonjour {email} 👋 !
-    {content}
+    Bonjour {email} 👋 !<br>
+    {content}<br>
     Bons tricks,<br>
     L'équipe TricksTok.<br>
     </body>
@@ -22,8 +22,8 @@ class Template:
     """
 
     betalog = """
-    Tout d’abord merci de t’être inscris à la beta access 🙏. Le 1er janvier (normalement 😅) tu recevra un email contenant tous ce dont tu aura besoin pour accéder et mener à bien ta première expérience sur TricksTok en beta access.<br>
-    En attendant, tu peux nous visiter de temps en temps sur YouTube (https://youtube.com/@trickstok) pour savoir où on en est 😊 !<br>
+    Tout d’abord merci de t’être inscris à la beta access 🙏. En mi-janvier (normalement 😅) tu recevra un email contenant tous ce dont tu aura besoin pour accéder et mener à bien ta première expérience sur TricksTok en beta access.<br>
+    En attendant, tu peux nous visiter de temps en temps sur YouTube (<a href="https://youtube.com/@trickstok">https://youtube.com/@trickstok</a>) pour savoir où on en est 😊 !<br>
     """
 
     banned = """
@@ -43,11 +43,18 @@ class Mailer(DatabaseObject):
         self.mails = self.collection.mailing
         self._from = 'Trickstok <trickstok@camarm.dev>'
 
-    def add_to_list(self, email, list):
-        self.mails.insert_one({'mail': email, 'list': list})
+    @property
+    def total(self):
+        return self.mails.count_documents({})
+
+    def add_to_list(self, email, list, callback=None, args={}):
+        if self.mails.find_one({'email': email, 'list': list}) is not None:
+            self.mails.insert_one({'mail': email, 'list': list})
+            if callback is not None:
+                callback(**args)
 
     def get_list_mails(self, list):
-        self.mails.find({'list': list})
+        return self.mails.find({'list': list})
 
     def send_mail(self, to, subject, content):
         server = smtplib.SMTP('192.168.1.141', 25)
