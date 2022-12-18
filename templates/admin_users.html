@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administration - Trickstok</title>
+  <script src="https://kit.fontawesome.com/628c8d2499.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/form.css">
+</head>
+
+<body>
+
+<div class="container">
+  <div class="columns">
+    <div class="column is-3 ">
+      <aside class="menu is-hidden-mobile">
+        <p class="menu-label">
+          TricksTok
+        </p>
+        <ul class="menu-list">
+          <li>
+            <li>
+              <a class="is-active">Administration</a>
+              <ul>
+                <li><a href="/admin">Vue d'ensemble</a></li>
+                <li><a class="is-active">Scan utilisateurs</a></li>
+              </ul>
+            </li>
+          </li>
+          <li><a href="/">Site web</a></li>
+          <li><a href="/admin/mails">Campagnes email</a></li>
+        </ul>
+        <p class="menu-label">
+          Network
+        </p>
+        <ul class="menu-list">
+          <li><a href="https://grafana.trickstok.server.camarm.fr">Grafana</a></li>
+          <li><a href="https://mail.ovh.net/roundcube">Boîte mail</a></li>
+        </ul>
+      </aside>
+    </div>
+    <div class="column is-9">
+      <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+          <li><a href="">{{result.username}}</a></li>
+          <li><a href="">Administration</a></li>
+          <li class="is-active"><a href="#" aria-current="page">Vue d'ensemble</a></li>
+        </ul>
+      </nav>
+      <section class="hero is-info welcome is-small">
+        <div class="hero-body">
+          <div class="container">
+            <h1 class="title">
+              Hello, {{result.username}}.
+            </h1>
+            <h2 class="subtitle">
+              Bienvenue sur la page d'administration
+            </h2>
+          </div>
+        </div>
+      </section>
+      <div class="columns is-justify-content-center mt-3">
+        <div class="column is-full">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">
+                Scanner un utilisateur
+              </p>
+              <a href="#" class="card-header-icon" aria-label="more options">
+                  <span class="icon">
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                  </span>
+              </a>
+            </header>
+            <div class="card-content">
+              <form action="/admin/users">
+                <label class="label">Nom d'utilisateur</label>
+                <div class="content">
+                  <div class="control has-icons-left has-icons-right">
+                    <input class="input is-medium" type="text" name="user">
+                    <span class="icon is-medium is-left">
+                      <i class="fa fa-search"></i>
+                    </span>
+                    <span class="icon is-medium is-right">
+                      <i class="fa fa-check"></i>
+                    </span>
+                  </div>
+                  <div class="control mt-3">
+                    <button class="button is-info">Rechercher</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          {% if result != none %}
+          <div class="columns is-mobile">
+            <div class="column is-full">
+              <div class="card">
+                <header class="card-header">
+                  <p class="card-header-title">
+                    Résultats
+                  </p>
+                </header>
+                <div class="card-content">
+                  <h1 class="title">Profil</h1>
+                  <div class="card">
+                    <div class="card-content">
+                      <div class="media">
+                        <div class="media-left">
+                          <figure class="image">
+                            <img class="photo is-rounded" style="object-fit: cover; width: 4em; height: 4em !important;" src="/media/pdp/{{result.photo}}" alt="Photo de profil">
+                          </figure>
+                        </div>
+                        <div class="media-content">
+                          <p class="title is-4">{{result.fullname}}</p>
+                          <p class="subtitle is-6">@{{result.username}} {% if result.certified %}<i class="fas fa-badge-check"></i>{% endif %}</p>
+                        </div>
+                      </div>
+
+                      <div class="content">
+                        {{result.description}}
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <h1 class="title">Vidéos</h1>
+                  <div class="videos">
+                    {% for video in result.videos %}
+                    <div class="video-card" onclick="location.href = '/home?video={{video.video_id}}'">
+                      <div class="video-media">
+                        <video src="/media/videos/{{video.video_id}}"></video>
+                      </div>
+                      <div class="video-footer">
+                        <p class="desc">
+                          {% if video.description|length > 21 %}
+                          {{video.description[0:17]}}...
+                          {% else %}
+                          {{video.description}}
+                          {% endif %}
+                        </p>
+                        <p class="views"><i class="fas fa-eye"></i>&nbsp;{{video.views}}</p>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <h1 class="title">Bannissements</h1>
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th>Le</th>
+                      <th>Du</th>
+                      <th>Au</th>
+                      <th>Par</th>
+                      <th>Raison</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ban in result.ban_history %}
+                    <tr>
+                      <th>{{ban.from}}</th>
+                      <td>{{ban.from}}</td>
+                      <td>{{ban.to}}</td>
+                      <td>{{ban.by}}</td>
+                      <td>{{ban.reason}}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                  <h1 class="subtitle">Informations complémentaires</h1>
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th>Clé</th>
+                      <th>Valeur</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key in result.keys() %}
+                      <tr>
+                        <th>{{key}}</th>
+                        <td>{{result[key]}}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<script async type="text/javascript" src="../js/bulma.js"></script>-->
+</body>
+
+</html>

@@ -1,20 +1,21 @@
-import json
-import os
-import random
+import datetime
+import locale
 import re
 import secrets
 import sys
 
 import conf
 import flask
-import requests
 from flask import Flask, request, redirect, render_template, make_response, send_file, Response
-from trickstok import Users, Videos
+from trickstok import Users, Videos, Mailer, Template
 
+locale.setlocale(locale.LC_ALL, "fr_FR.UTF-8")
 configuration = conf.asdict()
 db_conf = {"user": configuration['App']['db_user'],  "password": configuration['App']['db_password'], "url": configuration['App']['db_url']}
 users = Users(**db_conf, salt=configuration['App']['secret'])
 videos = Videos(**db_conf)
+mails = Mailer(**db_conf)
+templates = Template()
 app = Flask('Tricks Tok, The TikTok of Tricks')
 
 
@@ -23,8 +24,9 @@ def auth(template, **context):
     token = request.cookies.get('token')
     if username and token:
         user = users.find_by_username(username)
-        if user['token'] == token:
+        if user['token'] == token and user['banned'] == False:
             user['videos'] = videos.find_by_user(user['_id'])
+            del user['ban_history']
             return render_template(template, **context, user=user)
     return redirect('/')
 
@@ -34,7 +36,7 @@ def is_logged():
     token = request.cookies.get('token')
     if username and token:
         user = users.find_by_username(username)
-        if user['token'] == token:
+        if user['token'] == token and user['banned'] == False:
             return True, user
     return False, {}
 
@@ -66,8 +68,84 @@ def moderation():
     logged, user = is_logged()
     if logged:
         if user['administrator']:
+            success = None
+            if request.args.get('success'):
+                success = True if request.args.get('success') == 'y' else False
             reports = videos.get_reported()
-            return auth('admin.html', reports=reports)
+            print(reports)
+            users_nb = users.total
+            videos_nb = videos.total
+            views_nb = videos.total_views
+            reports_nb = videos.total_reports
+            return auth('admin.html', success=success, reports=reports, users_nb=users_nb, videos_nb=videos_nb, views_nb=views_nb, reports_nb=reports_nb)
+    return redirect('/log')
+
+
+@app.route('/terms')
+def terms_and_conditions():
+    return render_template('terms_and_conditions.html')
+
+
+@app.route('/admin/users')
+def moderation_users():
+    logged, user = is_logged()
+    if logged:
+        if user['administrator']:
+            if request.args.get('user') is not None:
+                username = request.args.get('user')
+                user = users.find_by_username(username)
+                return auth('admin_users.html', result=user)
+            return auth('admin_users.html', result=None)
+    return redirect('/log')
+
+
+@app.route('/admin/ban', methods=['POST'])
+def ban_user():
+    logged, user = is_logged()
+    if logged:
+        if user['administrator']:
+            form = request.form
+            today = datetime.datetime.now()
+            username = form['username']
+            reason = form['reason']
+            user_email = users.find_by_username(username)['email']
+            to = form['to']
+            if to == 'always':
+                date = True
+            elif to == 'week':
+                date = today + datetime.timedelta(weeks=1)
+            elif to == 'month':
+                date = today + datetime.timedelta(weeks=4)
+            elif to == '2month':
+                date = today + datetime.timedelta(weeks=4 * 2)
+            elif to == '5month':
+                date = today + datetime.timedelta(weeks=4 * 5)
+            else:
+                date = True
+            users.ban(username, date, today, user['username'], reason)
+            if date == True:
+                type = 'définitif'
+                after = '.'
+            else:
+                type = 'temporaire'
+                today_string = today.strftime("%A %-d %B")
+                date_string = date.strftime("%A %-d %B")
+                after = f' et durera du {today_string} au {date_string}.'
+            content = templates.banned.format(type=type, end=after, reason=reason)
+            mails.send_mail(user_email, 'TricksTok - Bannissement', content)
+            return redirect('/admin?success=y')
+    return redirect('/log')
+
+
+@app.route('/admin/certify', methods=['POST'])
+def certify_user():
+    logged, user = is_logged()
+    if logged:
+        if user['administrator']:
+            form = request.form
+            username = form['username']
+            users.certify(username)
+            return redirect('/admin?success=y')
     return redirect('/log')
 
 
