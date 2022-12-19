@@ -283,14 +283,14 @@
         video.setAttribute('class', 'video up')
         setTimeout(() => {
             video.setAttribute('class', 'video')
-        }, 1000)
+        }, 1200)
     }
 
     function animup() {
         video.setAttribute('class', 'video down')
         setTimeout(() => {
             video.setAttribute('class', 'video')
-        }, 900)
+        }, 1200)
     }
 
     function swipedown(video=document.querySelector('.video')) {
@@ -314,7 +314,7 @@
     }
 
     const swiper = new Swipe(document.querySelector('#home'))
-    swiper.onDown(swipeup)
+    // swiper.onDown(swipeup)
     swiper.onUp(swipedown)
     swiper.run()
 
