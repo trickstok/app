@@ -342,12 +342,35 @@ def unlikeVideo(video):
     return {"message": "Error not connected"}
 
 
-# def stream(path):
-#     file = open(path, "rb")
-#     data = file.read(1024)
-#     while data:
-#         yield b'--frame\r\nContent-Type: image/mpeg\r\n\r\n' + data + b'\r\n'
-#         data = file.read(1024)
+def stream(path):
+    headers = request.headers
+    if "range" not in headers:
+        return app.response_class(status=400)
+
+    video_path = os.path.abspath(path)
+    size = os.stat(video_path)
+    size = size.st_size
+
+    chunk_size = 10**3
+    start = int(re.sub("\D", "", headers["range"]))
+    end = min(start + chunk_size, size - 1)
+
+    content_length = end - start + 1
+
+    def get_chunk(video_path, start, end):
+        with open(video_path, "rb") as f:
+            f.seek(start)
+            chunk = f.read(end)
+        return chunk
+
+    headers = {
+        "Content-Range": f"bytes {start}-{end}/{size}",
+        "Accept-Ranges": "bytes",
+        "Content-Length": content_length,
+        "Content-Type": "video/mp4",
+    }
+
+    return app.response_class(get_chunk(video_path, start, end), 206, headers)
 
 
 @app.route('/media/<type>/<file>')
@@ -355,8 +378,9 @@ def deliver_media(type, file):
     logged, user = is_logged()
     if logged:
         if type == 'videos':
-            videos.find_by_id(file).add_view(user['_id'])
-            return send_file(f'data/{type}/{file}')
+            if file != 'banned.mp4':
+                videos.find_by_id(file).add_view(user['_id'])
+            return stream(f'data/{type}/{file}')
         return send_file(f'data/{type}/{file}')
     return ""
 
@@ -380,9 +404,10 @@ def favicon():
 
 if __name__ == '__main__':
     debug = False
+    port = int(configuration['App']['port'])
     if '--debug' in sys.argv:
         debug = True
     if '--secure' in sys.argv:
-        app.run(debug=debug, threaded=True, host='0.0.0.0', port=10000, ssl_context=('certificate.pem', 'privatekey.pem'))
+        app.run(debug=debug, threaded=True, host='0.0.0.0', port=port, ssl_context=('certificate.pem', 'privatekey.pem'))
     else:
-        app.run(debug=debug, threaded=True, host='0.0.0.0', port=10000)
+        app.run(debug=debug, threaded=True, host='0.0.0.0', port=port)
