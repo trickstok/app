@@ -1,4 +1,5 @@
 import os
+import socket
 
 import fire
 
@@ -16,7 +17,19 @@ rules:
 {nodes}
         """
 
-    def __call__(self, number_of_instances, config='config.ini', ports='auto', generate_load_balancer_rules='yes', load_balancer_port='8080'):
+    @staticmethod
+    def get_ip():
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+
+    def __call__(self, number_of_instances, config='config.ini', ports='auto', generate_load_balancer_rules='yes',
+                 load_balancer_port='8080', start_cmd="python3 main.py"):
+
+        ip = self.get_ip()
+
         if not os.path.isdir('instances'):
             os.mkdir('instances')
 
@@ -30,8 +43,10 @@ rules:
 
         conf_file = open(config)
         conf_file.seek(1)
-        configuration = {line.split("=")[0]: "=".join(line.split("=")[1:]).replace("\n", "") for line in conf_file.readlines()[1:]}
+        configuration = {line.split("=")[0]: "=".join(line.split("=")[1:]).replace("\n", "") for line in
+                         conf_file.readlines()[1:]}
 
+        start_all_file_content = ""
         for i in range(0, number_of_instances):
             print(f'Configuring instance n°{i}')
             current_conf = configuration
@@ -44,16 +59,25 @@ rules:
                 content += f"{field}={current_conf[field]}\n"
             current_conf_file.write(content)
             current_conf_file.close()
+            start_all_file_content += f"{start_cmd} --config instances/{i}.config.ini &\n"
         if generate_load_balancer_rules:
             print('Writing load balancer rules')
             os.remove(f'instances/lb_rules.yaml') if os.path.isfile(f'instances/lb_rules.yaml') else ...
             open(f'instances/lb_rules.yaml', 'x')
             load_balancer_file = open(f'instances/lb_rules.yaml', 'w')
-            nodes = (f'    - 127.0.0.1:{port}\n' for port in ports)
+            nodes = (f'    - {ip}:{port}\n' for port in ports)
             load_balancer_rules = self.lb_template.format(port=load_balancer_port, nodes="".join(nodes))
             load_balancer_file.write(load_balancer_rules)
             load_balancer_file.close()
+        start_all_file_content += f"docker run -v `pwd`/instances:/configs -p {load_balancer_port}:{load_balancer_port} -i ghcr.io/inlets/mixctl:latest -f /configs/lb_rules.yaml &"
+        print('Writing start_all.sh')
+        os.remove(f'instances/start_all.sh') if os.path.isfile(f'instances/start_all.sh') else ...
+        open(f'instances/start_all.sh', 'x')
+        start_all_file = open(f'instances/start_all.sh', 'w')
+        start_all_file.write(start_all_file_content)
+        start_all_file.close()
         print('Terminate, all files are in instances/')
+        print('To start all instances and load balancer execute instances/start_all.sh')
 
 
 if __name__ == '__main__':
