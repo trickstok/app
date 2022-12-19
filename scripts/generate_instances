@@ -71,7 +71,7 @@ rules:
             load_balancer_rules = self.lb_template.format(port=load_balancer_port, nodes="".join(nodes))
             load_balancer_file.write(load_balancer_rules)
             load_balancer_file.close()
-        start_all_file_content += f"docker run -v `pwd`/instances:/configs -p {load_balancer_port}:{load_balancer_port} -i ghcr.io/inlets/mixctl:latest -f /configs/lb_rules.yaml &"
+            start_all_file_content += f"docker run -v `pwd`/instances:/configs -p {load_balancer_port}:{load_balancer_port} -i ghcr.io/inlets/mixctl:latest -f /configs/lb_rules.yaml &"
         print('Writing start_all.sh')
         os.remove(f'instances/start_all.sh') if os.path.isfile(f'instances/start_all.sh') else ...
         open(f'instances/start_all.sh', 'x')
