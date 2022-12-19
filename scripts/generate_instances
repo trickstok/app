@@ -28,6 +28,8 @@ rules:
     def __call__(self, number_of_instances, config='config.ini', ports='auto', generate_load_balancer_rules='yes',
                  load_balancer_port='8080', start_cmd="python3 main.py"):
 
+        os.system('mkdir -p instances')
+
         ip = self.get_ip()
 
         if not os.path.isdir('instances'):

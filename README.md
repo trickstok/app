@@ -20,6 +20,8 @@ The Tiktok of Trick
 
 ## Developers
 
+Please note that all scripts need to be executed at project root !
+
 ### Self-host:
 
 [//]: # (In production mode we use a load balancer to support multiple users connected...<br>)
