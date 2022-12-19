@@ -91,7 +91,8 @@ class Videos(DatabaseObject):
         video['liked'] = self.is_liked(video['_id'], user)
         if different_from is not None:
             if video['video_id'] == different_from:
-                video = self.random(user, different_from)
+                if different_from != 'banned.mp4':
+                    video = self.random(user, different_from)
         # video_user = self.db.users.find_one({'_id': video['user']})
         # while video_user['banned']:
         #     video = list(self.db.videos.aggregate([
