@@ -1,0 +1,60 @@
+import os
+
+import fire
+
+
+class GenerateInstances:
+
+    def __init__(self):
+        self.lb_template = """
+version: 0.1
+
+rules:
+- name: trickstok
+  from: 0.0.0.0:{port}
+  to:
+{nodes}
+        """
+
+    def __call__(self, number_of_instances, config='config.ini', ports='auto', generate_load_balancer_rules='yes', load_balancer_port='8080'):
+        if not os.path.isdir('instances'):
+            os.mkdir('instances')
+
+        if ports == 'auto':
+            ports = [10000 + i for i in range(0, number_of_instances)]
+
+        generate_load_balancer_rules = True if generate_load_balancer_rules == 'yes' else False
+
+        if len(ports) != number_of_instances:
+            raise StopIteration(f"Ports list is not long enough, expected {number_of_instances} got {len(ports)}")
+
+        conf_file = open(config)
+        conf_file.seek(1)
+        configuration = {line.split("=")[0]: "=".join(line.split("=")[1:]).replace("\n", "") for line in conf_file.readlines()[1:]}
+
+        for i in range(0, number_of_instances):
+            print(f'Configuring instance n°{i}')
+            current_conf = configuration
+            current_conf['PORT'] = str(ports[i])
+            os.remove(f'instances/{i}.config.ini') if os.path.isfile(f'instances/{i}.config.ini') else ...
+            open(f'instances/{i}.config.ini', 'x')
+            current_conf_file = open(f'instances/{i}.config.ini', 'w')
+            content = '[App]\n'
+            for field in current_conf.keys():
+                content += f"{field}={current_conf[field]}\n"
+            current_conf_file.write(content)
+            current_conf_file.close()
+        if generate_load_balancer_rules:
+            print('Writing load balancer rules')
+            os.remove(f'instances/lb_rules.yaml') if os.path.isfile(f'instances/lb_rules.yaml') else ...
+            open(f'instances/lb_rules.yaml', 'x')
+            load_balancer_file = open(f'instances/lb_rules.yaml', 'w')
+            nodes = (f'    - 127.0.0.1:{port}\n' for port in ports)
+            load_balancer_rules = self.lb_template.format(port=load_balancer_port, nodes="".join(nodes))
+            load_balancer_file.write(load_balancer_rules)
+            load_balancer_file.close()
+        print('Terminate, all files are in instances/')
+
+
+if __name__ == '__main__':
+    fire.Fire(GenerateInstances)

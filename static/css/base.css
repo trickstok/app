@@ -575,11 +575,11 @@ strong {
     font-size: 0.8em;
 }
 .video.up {
-    animation: .9s up infinite;
+    animation: 1.2s up infinite;
     position: inherit;
 }
 .video.down {
-    animation: .9s down infinite;
+    animation: 1.2s down infinite;
     position: inherit;
 }
 .photo {
