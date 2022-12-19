@@ -1,0 +1,9 @@
+[Unit]
+Description=TricksTok, the TickTok of tricks
+
+[Service]
+Type=simple
+ExecStart=/bin/sh /trickstok/start.sh
+
+[Install]
+WantedBy=multi-user.target

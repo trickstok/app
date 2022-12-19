@@ -57,10 +57,14 @@ make deploy[-https]
 ```
 
 **install-service:**<br>
-Install the service file, to make TricksTok start at boot
+Install the service file, to make TricksTok start at boot, <b style="color: red">Execute after `make install`</b>
 ```shell
 make install-service
 ```
+
+You can configure start script in `script/start.sh`, default it execute `make deploy`
+
+---
 
 For advanced deployment with multiple instances and a load balancer you can use `script/generate_instances`.
 
