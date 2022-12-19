@@ -4,7 +4,6 @@ import os
 import re
 import secrets
 import sys
-
 import conf
 import flask
 import markdown
