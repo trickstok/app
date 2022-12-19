@@ -1,9 +1,63 @@
-<img src="static/assets/banner.png">
+<div style="text-align: center">
+
+<img src="static/assets/banner.png" width="500" style="border-radius: 20px">
+
+<style>
+:root {
+    --primary: #F7FFF7;
+    --blue: #4c7bfe;
+    --red: #FF6B6B;
+    --yellow: #FFE66D;
+    --black: #1c1c1c;
+    --third: #9f9f9f;
+}
+
+.badge .first {
+    background: var(--black);
+    padding: .5em;
+    border-radius: 10px 0 0 10px;
+}
+
+.badge .second {
+    padding: .5em;
+    border-radius: 0 10px 10px 0;
+}
+
+.badge .second.red {
+    background: var(--red);
+    color: var(--primary)
+}
+
+.badge .second.blue {
+    background: var(--blue);
+    color: var(--primary)
+}
+
+.badge .second.yellow {
+    background: var(--yellow);
+    color: var(--black)
+}
+
+.badge .second.grey {
+    background: var(--third);
+    color: var(--black)
+}
+</style>
+
+<div style="display: flex; flex-direction: row; justify-content: space-evenly">
+<span class="badge"><span class="first">State</span><span class="second red">DEV</span></span>
+<span class="badge"><span class="first">Licence</span><span class="second blue">CeCILL v2.1</span></span>
+<span class="badge"><span class="first">Version</span><span class="second yellow">a+0.0</span></span>
+<span class="badge"><span class="first">Discord</span><span class="second grey">Closed</span></span>
+</div>
 
 # Tricks Tok
+
+
 The Tiktok of Trick
 
-
+</div>
+ 
 **This project is available at [trickstok.tk](https://trickstok.tk)**
 
 ## Developers
