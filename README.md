@@ -2,53 +2,11 @@
 
 <img src="static/assets/banner.png" width="500" style="border-radius: 20px">
 
-<style>
-:root {
-    --primary: #F7FFF7;
-    --blue: #4c7bfe;
-    --red: #FF6B6B;
-    --yellow: #FFE66D;
-    --black: #1c1c1c;
-    --third: #9f9f9f;
-}
-
-.badge .first {
-    background: var(--black);
-    padding: .5em;
-    border-radius: 10px 0 0 10px;
-}
-
-.badge .second {
-    padding: .5em;
-    border-radius: 0 10px 10px 0;
-}
-
-.badge .second.red {
-    background: var(--red);
-    color: var(--primary)
-}
-
-.badge .second.blue {
-    background: var(--blue);
-    color: var(--primary)
-}
-
-.badge .second.yellow {
-    background: var(--yellow);
-    color: var(--black)
-}
-
-.badge .second.grey {
-    background: var(--third);
-    color: var(--black)
-}
-</style>
-
 <div style="display: flex; flex-direction: row; justify-content: space-evenly">
-<span class="badge"><span class="first">State</span><span class="second red">DEV</span></span>
-<span class="badge"><span class="first">Licence</span><span class="second blue">CeCILL v2.1</span></span>
-<span class="badge"><span class="first">Version</span><span class="second yellow">a+0.0</span></span>
-<span class="badge"><span class="first">Discord</span><span class="second grey">Closed</span></span>
+<span class="badge"><span class="first" style="background: #1c1c1c; padding: .5em; border-radius: 10px 0 0 10px;">State</span><span class="second red" style="padding: .5em; border-radius: 0 10px 10px 0; background: #FF6B6B; color: #F7FFF7">DEV</span></span>
+<span class="badge"><span class="first" style="background: #1c1c1c; padding: .5em; border-radius: 10px 0 0 10px;">Licence</span><span class="second blue" style="padding: .5em; border-radius: 0 10px 10px 0; background: #4c7bfe; color: #F7FFF7">CeCILL v2.1</span></span>
+<span class="badge"><span class="first" style="background: #1c1c1c; padding: .5em; border-radius: 10px 0 0 10px;">Version</span><span class="second yellow" style="padding: .5em; border-radius: 0 10px 10px 0; background: #FFE66D; color: #1c1c1c">a+0.0</span></span>
+<span class="badge"><span class="first" style="background: #1c1c1c; padding: .5em; border-radius: 10px 0 0 10px;">Discord</span><span class="second grey" style="padding: .5em; border-radius: 0 10px 10px 0; background: #9f9f9f; color: #1c1c1c">Closed</span></span>
 </div>
 
 # Tricks Tok
