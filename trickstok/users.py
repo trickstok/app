@@ -43,7 +43,10 @@ class Users(DatabaseObject):
     def ban(self, username, to, from_date, by, reason):
         user = self.find_by_username(username)
         ban_history = user['ban_history']
-        ban_history.append({'from': from_date, 'to': to, 'by': by, 'reason': reason})
+        to_string = to
+        if to:
+            to_string = 'Toujours'
+        ban_history.append({'from': from_date, 'to': to_string, 'by': by, 'reason': reason})
         self.db.users.update_one({'username': username}, {'$set': {'banned': to, 'ban_history': ban_history}})
 
     def certify(self, username):
