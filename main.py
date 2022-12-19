@@ -88,21 +88,21 @@ def blog():
     return render_template('blog.html', **article, articles=articles)
 
 
-@app.route('/home')
-def home():
-    logged, user = is_logged()
-    if request.args.get('video') is not None:
-        video = videos.find_by_id(request.args.get('video'))
-        video_id = video.video_object_id
-        video = video.video
-        if user:
-            video['liked'] = videos.is_liked(video_id, user['_id'])
-        else:
-            video['liked'] = False
-        return auth('index.html', video=video)
-    if logged:
-        return auth('index.html', video=videos.random(user['_id']).video)
-    return redirect('/log')
+# @app.route('/home')
+# def home():
+#     logged, user = is_logged()
+#     if request.args.get('video') is not None:
+#         video = videos.find_by_id(request.args.get('video'))
+#         video_id = video.video_object_id
+#         video = video.video
+#         if user:
+#             video['liked'] = videos.is_liked(video_id, user['_id'])
+#         else:
+#             video['liked'] = False
+#         return auth('index.html', video=video)
+#     if logged:
+#         return auth('index.html', video=videos.random(user['_id']).video)
+#     return redirect('/log')
 
 
 @app.route('/prelogin', methods=['POST'])
@@ -114,22 +114,22 @@ def beta_access():
     return redirect('/')
 
 
-@app.route('/admin')
-def moderation():
-    logged, user = is_logged()
-    if logged:
-        if user['administrator']:
-            success = None
-            if request.args.get('success'):
-                success = True if request.args.get('success') == 'y' else False
-            reports = videos.get_reported()
-            print(reports)
-            users_nb = users.total
-            videos_nb = videos.total
-            views_nb = videos.total_views
-            reports_nb = videos.total_reports
-            return auth('admin.html', success=success, reports=reports, users_nb=users_nb, videos_nb=videos_nb, views_nb=views_nb, reports_nb=reports_nb)
-    return redirect('/log')
+# @app.route('/admin')
+# def moderation():
+#     logged, user = is_logged()
+#     if logged:
+#         if user['administrator']:
+#             success = None
+#             if request.args.get('success'):
+#                 success = True if request.args.get('success') == 'y' else False
+#             reports = videos.get_reported()
+#             print(reports)
+#             users_nb = users.total
+#             videos_nb = videos.total
+#             views_nb = videos.total_views
+#             reports_nb = videos.total_reports
+#             return auth('admin.html', success=success, reports=reports, users_nb=users_nb, videos_nb=videos_nb, views_nb=views_nb, reports_nb=reports_nb)
+#     return redirect('/log')
 
 
 @app.route('/terms')
@@ -137,89 +137,89 @@ def terms_and_conditions():
     return render_template('terms_and_conditions.html')
 
 
-@app.route('/admin/users')
-def moderation_users():
-    logged, user = is_logged()
-    if logged:
-        if user['administrator']:
-            if request.args.get('user') is not None:
-                username = request.args.get('user')
-                user = users.find_by_username(username)
-                return auth('admin_users.html', result=user)
-            return auth('admin_users.html', result=None)
-    return redirect('/log')
+# @app.route('/admin/users')
+# def moderation_users():
+#     logged, user = is_logged()
+#     if logged:
+#         if user['administrator']:
+#             if request.args.get('user') is not None:
+#                 username = request.args.get('user')
+#                 user = users.find_by_username(username)
+#                 return auth('admin_users.html', result=user)
+#             return auth('admin_users.html', result=None)
+#     return redirect('/log')
+#
+#
+# @app.route('/admin/mails')
+# def moderation_mails():
+#     logged, user = is_logged()
+#     if logged:
+#         if user['administrator']:
+#             campagnes = mailing_lists
+#             total = mails.total
+#             mailing_campagnes = []
+#             for liste in campagnes:
+#                 emails = list(mails.get_list_mails(liste))
+#                 mailing_campagnes.append({'name': liste, 'mails': emails, 'number': len(emails)})
+#             return auth('admin_mails.html', campagnes=mailing_campagnes, total=total)
+#     return redirect('/log')
+#
+#
+# @app.route('/admin/ban', methods=['POST'])
+# def ban_user():
+#     logged, user = is_logged()
+#     if logged:
+#         if user['administrator']:
+#             form = request.form
+#             today = datetime.datetime.now()
+#             username = form['username']
+#             reason = form['reason']
+#             user_email = users.find_by_username(username)['email']
+#             to = form['to']
+#             if to == 'always':
+#                 date = True
+#             elif to == 'week':
+#                 date = today + datetime.timedelta(weeks=1)
+#             elif to == 'month':
+#                 date = today + datetime.timedelta(weeks=4)
+#             elif to == '2month':
+#                 date = today + datetime.timedelta(weeks=4 * 2)
+#             elif to == '5month':
+#                 date = today + datetime.timedelta(weeks=4 * 5)
+#             else:
+#                 date = True
+#             users.ban(username, date, today, user['username'], reason)
+#             if date == True:
+#                 type = 'définitif'
+#                 after = '.'
+#             else:
+#                 type = 'temporaire'
+#                 today_string = today.strftime("%A %-d %B")
+#                 date_string = date.strftime("%A %-d %B")
+#                 after = f' et durera du {today_string} au {date_string}.'
+#             content = templates.banned.format(type=type, end=after, reason=reason)
+#             mails.send_mail(user_email, 'TricksTok - Bannissement', content)
+#             return redirect('/admin?success=y')
+#     return redirect('/log')
+#
+#
+# @app.route('/admin/certify', methods=['POST'])
+# def certify_user():
+#     logged, user = is_logged()
+#     if logged:
+#         if user['administrator']:
+#             form = request.form
+#             username = form['username']
+#             users.certify(username)
+#             return redirect('/admin?success=y')
+#     return redirect('/log')
 
 
-@app.route('/admin/mails')
-def moderation_mails():
-    logged, user = is_logged()
-    if logged:
-        if user['administrator']:
-            campagnes = mailing_lists
-            total = mails.total
-            mailing_campagnes = []
-            for liste in campagnes:
-                emails = list(mails.get_list_mails(liste))
-                mailing_campagnes.append({'name': liste, 'mails': emails, 'number': len(emails)})
-            return auth('admin_mails.html', campagnes=mailing_campagnes, total=total)
-    return redirect('/log')
-
-
-@app.route('/admin/ban', methods=['POST'])
-def ban_user():
-    logged, user = is_logged()
-    if logged:
-        if user['administrator']:
-            form = request.form
-            today = datetime.datetime.now()
-            username = form['username']
-            reason = form['reason']
-            user_email = users.find_by_username(username)['email']
-            to = form['to']
-            if to == 'always':
-                date = True
-            elif to == 'week':
-                date = today + datetime.timedelta(weeks=1)
-            elif to == 'month':
-                date = today + datetime.timedelta(weeks=4)
-            elif to == '2month':
-                date = today + datetime.timedelta(weeks=4 * 2)
-            elif to == '5month':
-                date = today + datetime.timedelta(weeks=4 * 5)
-            else:
-                date = True
-            users.ban(username, date, today, user['username'], reason)
-            if date == True:
-                type = 'définitif'
-                after = '.'
-            else:
-                type = 'temporaire'
-                today_string = today.strftime("%A %-d %B")
-                date_string = date.strftime("%A %-d %B")
-                after = f' et durera du {today_string} au {date_string}.'
-            content = templates.banned.format(type=type, end=after, reason=reason)
-            mails.send_mail(user_email, 'TricksTok - Bannissement', content)
-            return redirect('/admin?success=y')
-    return redirect('/log')
-
-
-@app.route('/admin/certify', methods=['POST'])
-def certify_user():
-    logged, user = is_logged()
-    if logged:
-        if user['administrator']:
-            form = request.form
-            username = form['username']
-            users.certify(username)
-            return redirect('/admin?success=y')
-    return redirect('/log')
-
-
-@app.route('/u/<username>')
-def user_page(username):
-    user = users.find_by_username(username)
-    user_videos = videos.find_by_user(user['_id'])
-    return auth('profile.html', profile=user, videos=user_videos)
+# @app.route('/u/<username>')
+# def user_page(username):
+#     user = users.find_by_username(username)
+#     user_videos = videos.find_by_user(user['_id'])
+#     return auth('profile.html', profile=user, videos=user_videos)
 
 
 @app.route('/service-worker.js')
@@ -227,58 +227,58 @@ def sendWorker():
     return flask.send_file('static/js/pwa/service-worker.js')
 
 
-@app.route('/log')
-def connect():
-    return render_template('connect.html')
-
-
-@app.route('/reg')
-def register_ui():
-    return render_template('register.html')
-
-
-@app.route('/login', methods=['POST'])
-def login():
-    form = request.form
-    username = form['username']
-    password = form['password']
-    user = users.login(username, password)
-    if user[0]:
-        response = make_response(redirect('/home'))
-        response.set_cookie('token', user[1]['token'])
-        response.set_cookie('username', user[1]['username'])
-        return response
-    return redirect('/log')
-
-
-@app.route('/username-is-available')
-def is_available():
-    username = request.args.get('username')
-    user = users.find_by_username(username)
-    if user:
-        return {"username": username, "available": False}
-    return {"username": username, "available": True}
-
-
-@app.route('/register', methods=['POST'])
-def register():
-    form = request.form
-    username = form['username']
-    username = re.sub("[^a-z0-9_.]", "", username)
-    email = form['email']
-    fullname = form['fullname']
-    bio = form['bio']
-    password = form['password']
-    photo = request.files['photo']
-    photo_ext = photo.filename.split('.')[-1]
-    photo_id = secrets.token_urlsafe(16)
-    photo_string = f"{photo_id}.{photo_ext}"
-    photo.save(f'data/pdp/{photo_string}')
-    users.add(email, username, fullname, False, False, [], photo_string, bio, password)
-    response = make_response(redirect('/home'))
-    response.set_cookie('token', users.find_by_username(username)['token'])
-    response.set_cookie('username', username)
-    return response
+# @app.route('/log')
+# def connect():
+#     return render_template('connect.html')
+#
+#
+# @app.route('/reg')
+# def register_ui():
+#     return render_template('register.html')
+#
+#
+# @app.route('/login', methods=['POST'])
+# def login():
+#     form = request.form
+#     username = form['username']
+#     password = form['password']
+#     user = users.login(username, password)
+#     if user[0]:
+#         response = make_response(redirect('/home'))
+#         response.set_cookie('token', user[1]['token'])
+#         response.set_cookie('username', user[1]['username'])
+#         return response
+#     return redirect('/log')
+#
+#
+# @app.route('/username-is-available')
+# def is_available():
+#     username = request.args.get('username')
+#     user = users.find_by_username(username)
+#     if user:
+#         return {"username": username, "available": False}
+#     return {"username": username, "available": True}
+#
+#
+# @app.route('/register', methods=['POST'])
+# def register():
+#     form = request.form
+#     username = form['username']
+#     username = re.sub("[^a-z0-9_.]", "", username)
+#     email = form['email']
+#     fullname = form['fullname']
+#     bio = form['bio']
+#     password = form['password']
+#     photo = request.files['photo']
+#     photo_ext = photo.filename.split('.')[-1]
+#     photo_id = secrets.token_urlsafe(16)
+#     photo_string = f"{photo_id}.{photo_ext}"
+#     photo.save(f'data/pdp/{photo_string}')
+#     users.add(email, username, fullname, False, False, [], photo_string, bio, password)
+#     response = make_response(redirect('/home'))
+#     response.set_cookie('token', users.find_by_username(username)['token'])
+#     response.set_cookie('username', username)
+#     return response
 
 
 @app.route('/add')
