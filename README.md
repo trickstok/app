@@ -42,7 +42,7 @@ Install dependencies and configure TricksTok
 make install
 ```
 
-After `make install` you need to refactor `config.auto.ini` -> `config.ini` and change values !'
+After `make install` you need to refactor `config.auto.ini` -> `config.ini` and change values ([config reference](#configuration-file-reference)) !'
 
 **run:**<br>
 Run TricksTok, in development mode, you can add -https for https support.
@@ -83,3 +83,40 @@ Execute script:
 ```shell
 python3 scripts/generate_instances [options]
 ```
+
+### Configuration file reference
+
+Here is the required config.ini file:
+
+config.ini
+```dotenv
+[App]
+DB_USER=user
+DB_PASSWORD=userpassword
+DB_URL=your.mongo.server/?retryWrites=true&w=majority
+SECRET=secretrandomstring
+MAILSERVER=192.168.1.141
+MAILING_LISTS=test,other
+PORT=10000
+```
+
+**DB_*:**<br>
+DB_* field are required to connect with a mongodb database;<br>
+DB_USER: username<br>
+DB_PASSWORD: password for username<br>
+DB_URL: url to your mongodb server
+
+Mongodb database need a database named `trickstok` and the following collections:
+`comments,mailing,reports,users,videos,views`
+
+**SECRET:**<br>
+SECRET is a random string used as a salt to encode passwords et enforce security, put whatever you want.
+
+**MAILSERVER:**<br>
+MAILSERVER is an ip where a mailserver is running (with no creds needed to send mails), you can use [mailproxy](https://github.com/kz26/mailproxy).
+
+**MAILING_LIST:**<br>
+MAILING_LIST is a comma separated lists of mails, not very useful for self-host, it's useful when you make a newsletter on landing page or something like that... You can keep the default configuration nothing will change...
+
+**PORT:**<br>
+PORT is on which port TricksTok will run, choose the one you want.
