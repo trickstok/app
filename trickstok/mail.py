@@ -48,7 +48,7 @@ class Mailer(DatabaseObject):
         return self.mails.count_documents({})
 
     def add_to_list(self, email, list, callback=None, args={}):
-        if self.mails.find_one({'email': email, 'list': list}) is not None:
+        if self.mails.find_one({'email': email, 'list': list}) is None:
             self.mails.insert_one({'mail': email, 'list': list})
             if callback is not None:
                 callback(**args)
