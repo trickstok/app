@@ -286,6 +286,17 @@ def addVideo():
     return auth('add.html')
 
 
+@app.route('/delete/<video>')
+def deleteVideo(video):
+    logged, user = is_logged()
+    if logged:
+        video = videos.find_by_id(video)
+        if video.video['user']['username'] == user['username']:
+            video.delete()
+            return redirect('/home#account')
+    return redirect('/log')
+
+
 @app.route('/post', methods=['POST'])
 def postVideo():
     logged, user = is_logged()

@@ -1,3 +1,5 @@
+import os
+
 from pymongo.collection import ObjectId
 from trickstok import DatabaseObject, Users
 
@@ -27,6 +29,9 @@ class Videos(DatabaseObject):
             "tags": tags,
             "video_id": video_id
         })
+
+    def search(self, keyword):
+        return list(self.db.videos.find({'$search': keyword}))
 
     def get_reported(self):
         reported = self.db.reports.find({})
@@ -165,4 +170,9 @@ class Video:
         return comments
 
     def delete(self):
-        self.db.comments.delete_many({})
+        self.db.comments.delete_many({"video": self.video_object_id})
+        self.db.reports.delete_many({"video": self.video_object_id})
+        self.db.views.delete_many({"video": self.video_object_id})
+        self.db.videos.delete_one({"_id": self.video_object_id})
+        if os.path.isfile(f"data/videos/{self.video['video_id']}"):
+            os.remove(f"data/videos/{self.video['video_id']}")
