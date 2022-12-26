@@ -285,6 +285,11 @@
         }
         location.hash = id
         document.getElementById(id).setAttribute('style', '')
+        if (id === 'home') {
+            video.play()
+        } else {
+            video.pause()
+        }
         document.getElementById(`changepage${id}`).classList.add('active')
     }
 
@@ -304,6 +309,8 @@
 
     function swipedown(video=document.querySelector('.video')) {
         loadNewVideo()
+        changePause('', false)
+        video.play()
         number = parseInt(video.getAttribute('number')) + 1
         if (videos[number] === undefined) {
             number = 0
@@ -378,11 +385,11 @@
     }
 
     window.addEventListener('load', () => {
+        video.play()
         if (ids.includes(window.location.hash.replace('#', ''))) {
             changePage(window.location.hash.replace('#', ''))
         }
         document.querySelector('.screenloader').classList.add('disable')
-        video.play()
     })
 
     function fullScreen() {
