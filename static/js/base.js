@@ -168,7 +168,7 @@ function loadNewVideo() {
                   </div>`
                 commentsList.insertAdjacentHTML("afterbegin", html);
             }
-            video.src = `/media/videos/${videoID}`
+            setTimeout(() => {video.src = `/media/videos/${videoID}`}, 500)
         })
 }
 
