@@ -94,7 +94,6 @@ function search() {
     fetch(`/search?q=${query}`)
         .then(resp => resp.json())
         .then(data => {
-            console.log(data)
             let users_results = data.data.users
             let videos_results = data.data.videos
 
@@ -128,7 +127,6 @@ function search() {
 
             html = ''
             users_results.forEach(user => {
-                console.log(user)
                 let certified_html;
                 if (user.certified) {
                     certified_html = `<i class="fas fa-badge-check"></i>`
@@ -164,7 +162,6 @@ function loadNewVideo() {
     fetch(`/watch?different_of=${videoID}`)
         .then(resp => resp.json())
         .then(data => {
-            console.log(data)
             likesIcon.classList.remove('active')
             videoObject = data.data
             if (videoObject.liked) {
