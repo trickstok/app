@@ -51,7 +51,9 @@ class Videos(DatabaseObject):
         return Video(self.db.videos.find_one({"video_id": _id}), self.db)
 
     def find_by_user(self, _id):
-        return [Video(video, self.db).video for video in self.db.videos.find({"user": _id})]
+        videos = [Video(video, self.db).video for video in self.db.videos.find({"user": _id})]
+        videos.reverse()
+        return videos
 
     def find_viewed_by_user(self, _id, in_list=False):
         views = self.db.views.find({'user': _id})
