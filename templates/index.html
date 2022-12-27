@@ -2,7 +2,7 @@
 {% block title %}The TikTok of Tricks !{% endblock %}
 {% block content %}
 <large-screen>
-  Désolé TricksTok est uniquement disponible sur téléphone ou écrans similaires...
+  Désolé TricksTok est uniquement disponible sur téléphone ou écrans similaires...<br>
   <div class="links">
     <a href="/">Revenir à l'accueil</a>
   </div>
@@ -150,8 +150,28 @@
       </div>
   </div>
   <div id="search" style="display: none">
-      <div class="container">
+      <div class="container search">
+        <div class="field has-addons">
+          <div class="control">
+            <input class="input is-rounded" type="text" placeholder="Recherche..." id="searchinput">
+          </div>
+          <div class="control">
+            <button class="button is-rounded" onclick="search()">
+              <span class="icon is-right">
+                <i class="fas fa-search"></i>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="tabs is-centered is-fullwidth">
+          <ul>
+            <li class="is-active" onclick="changeTab(this, 'li:last-child', 'results-videos-tab', ['results-users-tab'])"><a>Vidéos</a></li>
+            <li onclick="changeTab(this, 'li:first-child', 'results-users-tab', ['results-videos-tab'])"><a>Utilisateurs</a></li>
+          </ul>
+        </div>
 
+        <div id="results-videos-tab" class="videos"></div>
+        <div id="results-users-tab" style="display: none"></div>
       </div>
   </div>
   <div id="messages" style="display: none">
@@ -394,6 +414,13 @@
 
     function fullScreen() {
         document.documentElement.requestFullscreen().then(r => console.log(r)).catch(e => console.warn(e))
+    }
+
+    function changeTab(currentTab, requestTab, associatedEl, removeEls) {
+        currentTab.classList.add('is-active');
+        currentTab.parentElement.querySelector(requestTab).classList.remove('is-active');
+        document.getElementById(associatedEl).style = ''
+        removeEls.forEach(el => {document.getElementById(el).style = 'display: none'})
     }
 
 </script>

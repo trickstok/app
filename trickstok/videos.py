@@ -31,7 +31,11 @@ class Videos(DatabaseObject):
         })
 
     def search(self, keyword):
-        return list(self.db.videos.find({'$search': keyword}))
+        results = self.db.videos.find({"$text": {'$search': keyword}})
+        videos = []
+        for video in results:
+            videos.append(Video(video, self.db).video)
+        return list(videos)
 
     def get_reported(self):
         reported = self.db.reports.find({})
@@ -98,15 +102,6 @@ class Videos(DatabaseObject):
             if video['video_id'] == different_from:
                 if different_from != 'banned.mp4':
                     return self.random(user, different_from)
-        # video_user = self.db.users.find_one({'_id': video['user']})
-        # while video_user['banned']:
-        #     video = list(self.db.videos.aggregate([
-        #         {"$sample": {"size": 1}}
-        #     ]))[0]
-        #     if self.db.view.find_one({"video": video['_id'], "user": user}) is not None:
-        #         video = list(self.db.videos.aggregate([
-        #             {"$sample": {"size": 1}}
-        #         ]))[0]
         return Video(video, self.db)
 
 

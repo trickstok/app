@@ -26,7 +26,11 @@
             {{video.description}}
             {% endif %}
           </p>
-          <p class="views"><i class="fas fa-eye"></i>&nbsp;{{video.views}}</p>
+          <div class="actions">
+            <div class="views"><i class="fas fa-eye"></i>&nbsp;{{video.views}}</div>
+            <div class="likes" ><i class="fas fa-heart"></i>&nbsp;{{video.likes_count}}</div>
+            <div class="comments" ><i class="fas fa-comment"></i>&nbsp;{{video.comments_count}}</div>
+          </div>
         </div>
       </div>
       {% endfor %}

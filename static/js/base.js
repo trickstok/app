@@ -16,6 +16,7 @@ const userPp = document.querySelector('#userpp')
 const likes = document.querySelector('.icon-label.likes')
 const comment = document.querySelector('.icon-label.comments')
 const to_profile = document.querySelectorAll('.to-profile')
+const searchInput = document.getElementById('searchinput')
 
 function open(el) {
     username = el.getAttribute('link')
@@ -56,7 +57,7 @@ function updateProgress() {
 }
 
 function setProgress(e) {
-    const time = e.offsetX / range.offsetWidth; // get percentage where clicked and devide by duration
+    const time = e.offsetX / range.offsetWidth;
     bar.style.width = `${time * 100}%`;
     video.currentTime = time * video.duration;
 }
@@ -75,41 +76,6 @@ function deactivateComments() {
 
 }
 
-// function loadComments(id=video.id) {
-//     fetch(`/get-comments/${id}`
-//     )
-//         .then((response) => {
-//             return response.json();
-//         })
-//         .then((comments) => {
-//             commentsList.innerHTML = "";
-//             commentsCount.textContent = `${comments.length} commentaires`;
-//             commentsCount2.textContent = `${comments.length}`;
-//             comments.forEach((comment) => {
-//                 const html = `<div class="comments-item">
-//           <span class="comment-top">
-//             <span class="comment-top-logo" style="background-image:url(${comment.profilePhoto})"></span>
-//             <span class="comment-top-details">
-//               <span class="user-name">${comment.userName}</span>
-//               <span class="user-time">${comment.timePosted}</span>
-//               <span class="user-comment">${comment.comment}</span>
-//             </span>
-//           </span>
-//         </div>`;
-//                 commentsList.insertAdjacentHTML("afterbegin", html);
-//             });
-//         });
-//     likesAmount = 999;
-//     likesIcon.setAttribute('style', '')
-//     likes.textContent = `${likesAmount === 1000 ? "1K": likesAmount}`;
-//     nametest = document.querySelector('.user-name').innerHTML;
-//     if (nametest.length >= maxNameLen) {
-//         nametest = nametest.split('').slice(0, maxNameLen - 3).join('') + '...'
-//     }
-//     userName.innerHTML = '@' + nametest
-//     userPP.src = '/randompp'
-// }
-
 function pause(forcePause=false) {
     if (forcePause) {
         video.pause();
@@ -121,6 +87,76 @@ function pause(forcePause=false) {
         video.pause();
         changePause('fa-pause fa-2x', true)
     }
+}
+
+function search() {
+    query = searchInput.value
+    fetch(`/search?q=${query}`)
+        .then(resp => resp.json())
+        .then(data => {
+            console.log(data)
+            let users_results = data.data.users
+            let videos_results = data.data.videos
+
+            html = ''
+            videos_results.forEach(result => {
+                let result_description;
+                if (result.description.length > 21) {
+                    result_description = result.description.slice(0, 17) + '...'
+                } else {
+                    result_description = result.description
+                }
+                html += `
+                <div class="video-card">
+                  <div class="video-media" onclick="location.href = '/home?video=${result.video_id}'">
+                    <video src="/media/videos/${result.video_id}"></video>
+                  </div>
+                  <div class="video-footer">
+                    <p class="desc">
+                      ${result_description}
+                    </p>
+                    <div class="actions">
+                      <div class="views"><i class="fas fa-eye"></i>&nbsp;${result.views}</div>
+                      <div class="likes" ><i class="fas fa-heart"></i>&nbsp;${result.likes_count}</div>
+                      <div class="comments" ><i class="fas fa-comment"></i>&nbsp;${result.comment_count}</div>
+                    </div>
+                  </div>
+                </div>
+                `
+            })
+            document.getElementById('results-videos-tab').innerHTML = html
+
+            html = ''
+            users_results.forEach(user => {
+                console.log(user)
+                let certified_html;
+                if (user.certified) {
+                    certified_html = `<i class="fas fa-badge-check"></i>`
+                } else {
+                    certified_html = ''
+                }
+                html += `
+                <article class="media has-bd-b" style="cursor: pointer" onclick="location.href = '/u/${user.username}'">
+                  <figure class="media-left">
+                    <p class="image is-rounded" style="padding-left: .5em;">
+                      <img src="/media/pdp/${user.photo}" class="photo large is-rounded" alt="${user.username}">
+                    </p>
+                  </figure>
+                  <div class="media-content">
+                    <div class="content">
+                      <p>
+                        <strong>${user.fullname}&nbsp;${certified_html}</strong> <small>@${user.username}</small>
+                        <br>
+                        ${user.description}
+                      </p>
+                    </div>
+                  </div>
+               </article>
+                `
+            })
+
+            document.getElementById('results-users-tab').innerHTML = html
+        })
 }
 
 function loadNewVideo() {

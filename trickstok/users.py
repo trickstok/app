@@ -8,6 +8,7 @@ from trickstok import DatabaseObject
 
 locale.setlocale(locale.LC_ALL, "fr_FR.UTF-8")
 
+
 class Users(DatabaseObject):
 
     def __init__(self, user, password, url, salt):
@@ -48,6 +49,16 @@ class Users(DatabaseObject):
             to_string = 'Toujours'
         ban_history.append({'from': from_date, 'to': to_string, 'by': by, 'reason': reason})
         self.db.users.update_one({'username': username}, {'$set': {'banned': to, 'ban_history': ban_history}})
+
+    def search(self, keyword):
+        results = self.db.users.find({"$text": {'$search': keyword}})
+        users_results = []
+        for user in results:
+            del user['_id']
+            del user['token']
+            del user['password']
+            users_results.append(user)
+        return users_results
 
     def certify(self, username):
         self.db.users.update_one({'username': username}, {'$set': {'certified': True}})

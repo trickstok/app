@@ -227,6 +227,16 @@ def sendWorker():
     return flask.send_file('static/js/pwa/service-worker.js')
 
 
+@app.route('/search')
+def search():
+    query = request.args.get('q')
+    if query:
+        users_results = users.search(query)
+        video_results = videos.search(query)
+        return {"msg": "Search in trickstok successfully", "data": {"users": users_results, "videos": video_results}}
+    return {"msg": "Please provide a query (q=)", "data": []}
+
+
 @app.route('/log')
 def connect():
     return render_template('connect.html')
