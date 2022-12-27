@@ -75,7 +75,7 @@ class Videos(DatabaseObject):
         viewed = self.find_viewed_by_user(_id, True)
         not_viewed = []
         for interest in user_interests:
-            for video in self.db.videos.find({'_id': {"$not": {"$in": [viewed]}}, '$text': {'$search': interest}}):
+            for video in self.db.videos.find({'_id': {"$not": {"$in": viewed}}, '$text': {'$search': interest}}):
                 not_viewed.append(video)
         if not in_list:
             return [Video(self.db.videos.find({"_id": not_view['_id']}), self.db).video for not_view in not_viewed]
@@ -90,6 +90,7 @@ class Videos(DatabaseObject):
     def random(self, user, different_from=None):
         not_viewed_by_interests = self.find_interests_not_viewed_by_user(user, True)
         not_viewed = self.find_not_viewed_by_user(user, True)
+        print(not_viewed_by_interests, not_viewed)
         if len(not_viewed_by_interests) > 0:
             video = self.db.videos.find_one({'_id': not_viewed_by_interests[0]})
         elif len(not_viewed) == 0:
