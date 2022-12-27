@@ -35,6 +35,12 @@
     max-width: max-content;
 }
 
+.button.is-square {
+    width: 2.5em;
+    height: 2.5em;
+    padding: 1.5em !important;
+}
+
 .label:not(:last-child) {
     margin-bottom: .5em;
 }

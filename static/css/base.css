@@ -731,6 +731,11 @@ strong {
     padding-bottom: .5em;
 }
 
+#modify-account .modal-content {
+    width: 97%;
+    border-radius: 11px;
+}
+
 .profile {
     display: flex;
     flex-direction: column;

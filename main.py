@@ -291,6 +291,30 @@ def register():
     return response
 
 
+@app.route('/modify', methods=['POST'])
+def update_profile():
+    logged, user = is_logged()
+    if logged:
+        form = request.form
+        username = form['username']
+        username = re.sub("[^a-z0-9_.]", "", username)
+        email = form['email']
+        fullname = form['fullname']
+        bio = form['bio']
+        interests = form['interests'].split(',')
+        if request.files.get('photo'):
+            photo = request.files.get('photo')
+            photo_ext = photo.filename.split('.')[-1]
+            photo_id = secrets.token_urlsafe(16)
+            photo_string = f"{photo_id}.{photo_ext}"
+            photo.save(f'data/pdp/{photo_string}')
+        else:
+            photo_string = user['photo']
+        users.update(user['username'], email, username, fullname, interests, photo_string, bio)
+        return redirect('/home#account')
+    return redirect('/log')
+
+
 @app.route('/add')
 def addVideo():
     return auth('add.html')

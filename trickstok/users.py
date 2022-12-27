@@ -63,6 +63,16 @@ class Users(DatabaseObject):
     def certify(self, username):
         self.db.users.update_one({'username': username}, {'$set': {'certified': True}})
 
+    def update(self, old_username, new_email, new_username, new_fullname, new_interests, photo_string, new_bio):
+        self.db.users.update_one({'username': old_username}, {"$set": {
+            "email": new_email,
+            "username": new_username,
+            "fullname": new_fullname,
+            "interests": new_interests,
+            "photo": photo_string,
+            "description": new_bio
+        }})
+
     def login(self, username, password):
         user = self.find_by_username(username)
         if user:

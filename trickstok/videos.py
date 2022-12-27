@@ -75,7 +75,8 @@ class Videos(DatabaseObject):
         viewed = self.find_viewed_by_user(_id, True)
         not_viewed = []
         for interest in user_interests:
-            not_viewed.append(self.db.videos.find({'_id': {"$not": {"$in": [viewed]}}, '$text': {'$search': interest}}))
+            for video in self.db.videos.find({'_id': {"$not": {"$in": [viewed]}}, '$text': {'$search': interest}}):
+                not_viewed.append(video)
         if not in_list:
             return [Video(self.db.videos.find({"_id": not_view['_id']}), self.db).video for not_view in not_viewed]
         return [not_view['_id'] for not_view in not_viewed]

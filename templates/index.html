@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block title %}The TikTok of Tricks !{% endblock %}
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tagsinput@1.0.3/dist/css/bulma-tagsinput.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tagsinput@1.0.3/dist/js/bulma-tagsinput.min.js"></script>
 <large-screen>
   Désolé TricksTok est uniquement disponible sur téléphone ou écrans similaires...<br>
   <div class="links">
@@ -210,6 +212,7 @@
   <div id="account" style="display: none">
       <div class="container profil">
           <div class="profile">
+              <button class="button is-primary is-small is-square is-rounded" onclick="document.getElementById('modify-account').classList.add('is-active')" style="position: absolute; right: 1.5em; top: 1.5em"><i class="fas fa-edit"></i></button>
               <div class="image">
                   <img src="/media/pdp/{{user.photo}}" alt="{{user.username}}" class="photo large">
               </div>
@@ -240,6 +243,152 @@
             </div>
             {% endfor %}
           </div>
+        <div class="modal" id="modify-account">
+          <div class="modal-background"></div>
+          <div class="modal-content">
+            <form method="post" action="/modify" enctype="multipart/form-data">
+              <section class="section has-padding">
+                <button type="button" class="modal-close is-large" onclick="document.getElementById('modify-account').classList.remove('is-active')" aria-label="close"></button>
+                <h2 class="title is-2">Modifie ton profile</h2>
+                <p class="subtitle is-6">Change le look de ton profile !</p>
+
+                <div class="field">
+                  <label class="label">Nom Complet</label>
+                  <div class="control">
+                    <input class="input" type="text" placeholder="John Doe" name="fullname" required value="{{user.fullname}}">
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label">Nom d'utilisateur</label>
+                  <div class="control has-icons-left">
+                    <input class="input is-success" type="text" placeholder="johndoe" pattern="^[a-z0-9_.]+$" name="username" value="{{user.username}}" required>
+                    <span class="icon is-black is-small is-left">
+                      <i class="fas fa-at"></i>
+                    </span>
+                  </div>
+                  <p class="help is-success" id="username-info"></p>
+                  <p class="help is-danger">Please only use a-z 0-9 "." and "_" characters</p>
+                </div>
+
+                <div class="field">
+                  <label class="label">Email</label>
+                  <div class="control has-icons-left">
+                    <input class="input" type="email" placeholder="john@doe.com" name="email" required value="{{user.email}}">
+                    <span class="icon is-black is-small is-left">
+                      <i class="fas fa-envelope"></i>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label">Bio</label>
+                  <div class="control has-icons-left">
+                    <textarea class="textarea" name="bio" placeholder="Je suis John Doe, je pratique..." required >{{user.description}}</textarea>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label"><i class="fas fa-child"></i>&nbsp;Intérêts</label>
+                  <div class="control">
+                    <input class="input" type="text" data-type="tags" placeholder="bmx, cliff, freestyle" name="interests" value="{{','.join(user.interests)}}">
+                  </div>
+                  <p class="help is-info">Liste de tags séparés par des virgules (eg: trampo,freestyle,bmx,cliff,vtt)</p>
+                  <p class="help is-info">Nous aide à trouver des vidéos qui pourraient vous plaire !</p>
+                </div>
+
+                <div class="field">
+                  <label class="label">Photo</label>
+                  <figure class="media-left">
+                    <p class="image is-64x64" style="margin-bottom: 1em;">
+                      <img class="is-rounded" src="/media/pdp/{{user.photo}}" style="object-fit: cover; width: 100%; height: 100% !important;" id="preview">
+                    </p>
+                  </figure>
+                  <div class="file">
+                    <label class="file-label">
+                      <input class="file-input" type="file" name="photo" accept="image/png,image/jpeg" id="pdp">
+                      <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                          Choisir un fichier
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="field is-grouped">
+                  <div class="control">
+                    <button class="button is-third" type="submit">Modifier</button>
+                    <button class="button is-primary" type="button" onclick="document.getElementById('modify-account').classList.remove('is-active')">Annuler</button>
+                  </div>
+                </div>
+              </section>
+            </form>
+            <script>
+                BulmaTagsInput.attach()
+                let fileInput = document.querySelector('#pdp')
+                let usernameInput = document.querySelector('[name=\'username\']')
+                let usernameInfo = document.querySelector('#username-info')
+                let photoPreview = document.querySelector('#preview')
+
+                fileInput.addEventListener('change', async () => {
+                    file = fileInput.files[0]
+                    photoPreview.src = await toBase64(file)
+                })
+
+                usernameInput.addEventListener('change', verifyUsername)
+
+                const toBase64 = file => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+
+                function verifyUsername() {
+                    username = usernameInput.value
+
+                    fetch(`/username-is-available?username=${username}`)
+                        .then(resp => { return resp.json() })
+                        .then(json => {
+                            if (json['available']) {
+                                usernameInput.setCustomValidity("");
+                                usernameInput.classList.remove('is-danger')
+                                usernameInfo.classList.remove('is-danger')
+                                usernameInput.classList.add('is-success')
+                                usernameInfo.classList.add('is-success')
+                                usernameInput.classList.remove('is-warning')
+                                usernameInfo.classList.remove('is-warning')
+                                usernameInfo.innerText = 'Ce nom d\'utilisateur est disponible'
+                            } else {
+                                if (username === '{{user.username}}') {
+                                    usernameInput.setCustomValidity("Nom d'utilisateur inchangé");
+                                    usernameInput.classList.add('is-warning')
+                                    usernameInfo.classList.add('is-warning')
+                                    usernameInput.classList.remove('is-success')
+                                    usernameInfo.classList.remove('is-success')
+                                    usernameInput.classList.remove('is-danger')
+                                    usernameInfo.classList.remove('is-danger')
+                                    usernameInfo.innerText = 'Le nom d\'utilisateur n\'a pas été changé.'
+                                } else {
+                                    usernameInput.setCustomValidity("Nom d'utilisateur déjà pris !");
+                                    usernameInput.classList.add('is-danger')
+                                    usernameInfo.classList.add('is-danger')
+                                    usernameInput.classList.remove('is-success')
+                                    usernameInfo.classList.remove('is-success')
+                                    usernameInput.classList.remove('is-warning')
+                                    usernameInfo.classList.remove('is-warning')
+                                    usernameInfo.innerText = 'Ce nom d\'utilisateur est déjà pris'
+                                }
+                            }
+                        })
+                }
+            </script>
+          </div>
+        </div>
       </div>
   </div>
   <div class="bottom">
