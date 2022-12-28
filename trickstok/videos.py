@@ -92,7 +92,6 @@ class Videos(DatabaseObject):
     def random(self, user, different_from=None):
         not_viewed_by_interests = self.find_interests_not_viewed_by_user(user, True)
         not_viewed = self.find_not_viewed_by_user(user, True)
-        print(not_viewed_by_interests, not_viewed)
         if len(not_viewed_by_interests) > 0:
             video = self.db.videos.find_one({'_id': not_viewed_by_interests[0]})
         elif len(not_viewed) == 0:
