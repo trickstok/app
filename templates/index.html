@@ -18,7 +18,7 @@
   </div>
   <p class="has-text-white has-text-bold">Chargement de TricksTok...</p>
 </div>
-  <div id="home">
+  <div id="home" style="overflow: hidden">
       <div class="container">
           <div class="overlay">
               <div class="howto">
@@ -76,7 +76,7 @@
           </div>
 
 
-          <video data_id="{{video.video_id}}" style="cursor: s-resize;" title="Swipe" muted="" number="0" src="/media/videos/{{video.video_id}}" class="video" playsinline autoplay loop></video>
+          <video poster="/static/assets/loader.png" data_id="{{video.video_id}}" style="cursor: s-resize;" title="Swipe" muted="" number="0" src="/media/videos/{{video.video_id}}" class="video" playsinline autoplay loop></video>
 
 
           <div class="top">
@@ -477,9 +477,11 @@
     }
 
     function swipedown(video=document.querySelector('.video')) {
+        playPauseIcon.classList.remove('active')
+        playPauseIcon.style = 'display: none'
         loadNewVideo()
-        changePause('', false)
         video.play()
+        playPauseIcon.style = ''
         number = parseInt(video.getAttribute('number')) + 1
         if (videos[number] === undefined) {
             number = 0
