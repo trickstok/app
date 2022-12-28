@@ -490,15 +490,6 @@
         video.setAttribute('number', number)
         video.setAttribute('id', comments_ids[number])
     }
-    function swipeup(video=document.querySelector('.video')) {
-        number = parseInt(video.getAttribute('number')) - 1
-        if (videos[number] === undefined) {
-            number = videos_length - 1
-        }
-        animup()
-        video.setAttribute('number', number)
-        video.setAttribute('id', comments_ids[number])
-    }
 
     const swiper = new Swipe(document.querySelector('#home'))
     // swiper.onDown(swipeup)
