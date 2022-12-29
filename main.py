@@ -91,6 +91,7 @@ def blog():
 @app.route('/home')
 def home():
     logged, user = is_logged()
+    no_loader = True if request.args.get('nl') == 'nl' else False
     if request.args.get('video') is not None:
         video = videos.find_by_id(request.args.get('video'))
         video_id = video.video_object_id
@@ -99,9 +100,9 @@ def home():
             video['liked'] = videos.is_liked(video_id, user['_id'])
         else:
             video['liked'] = False
-        return auth('index.html', video=video)
+        return auth('index.html', video=video, no_loader=no_loader)
     if logged:
-        return auth('index.html', video=videos.random(user['_id']).video)
+        return auth('index.html', video=videos.random(user['_id']).video, no_loader=no_loader)
     return redirect('/log')
 
 
@@ -354,7 +355,7 @@ def commentVideo(video):
     if logged:
         comment = request.form['comment']
         videos.find_by_id(video).add_comment(comment, user['_id'])
-        return redirect(f'/home?video={video}')
+        return redirect(f'/home?video={video}&nl=nl')
     return redirect('/log')
 
 
@@ -364,7 +365,7 @@ def reportVideo(video):
     if logged:
         reason = request.form['reason']
         videos.find_by_id(video).report(reason, user['_id'])
-        return redirect(f'/home?video={video}')
+        return redirect(f'/home?video={video}&nl=nl')
     return redirect('/log')
 
 
