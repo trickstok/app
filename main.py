@@ -140,6 +140,11 @@ def terms_and_conditions():
     return render_template('terms_and_conditions.html')
 
 
+@app.route('/cgu')
+def CGU():
+    return render_template('cgu.html')
+
+
 @app.route('/admin/users')
 def moderation_users():
     logged, user = is_logged()
