@@ -130,6 +130,32 @@
               <a href="#" class="card-footer-item">View All</a>
             </footer>
           </div>
+          <div class="card events-card">
+            <header class="card-header">
+              <p class="card-header-title">
+                Notifications
+              </p>
+              <a href="#" class="card-header-icon" aria-label="more options">
+                  <span class="icon">
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                  </span>
+              </a>
+            </header>
+            <div class="card-table">
+              <div class="content">
+                <table class="table is-fullwidth is-striped">
+                  <tbody>
+                  {% for notif in notifs %}
+                  <tr>
+                    <td><i class="fa fa-bell-o"></i></td>
+                    <td>{{notif.content}}</td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="column is-6">
           <div class="card">

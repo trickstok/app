@@ -8,7 +8,7 @@ import conf
 import flask
 import markdown
 from flask import Flask, request, redirect, render_template, make_response, send_file, Response
-from trickstok import Users, Videos, Mailer, Template
+from trickstok import Users, Videos, Mailer, Template, Notifications
 
 locale.setlocale(locale.LC_ALL, "fr_FR.UTF-8")
 configuration = conf.asdict()
@@ -16,6 +16,7 @@ db_conf = {"user": configuration['App']['db_user'],  "password": configuration['
 users = Users(**db_conf, salt=configuration['App']['secret'])
 videos = Videos(**db_conf)
 mails = Mailer(**db_conf)
+notifications = Notifications(**db_conf)
 templates = Template()
 mailing_lists = configuration['App']['mailing_lists'].split(',')
 app = Flask('Tricks Tok, The TikTok of Tricks')
@@ -129,7 +130,8 @@ def moderation():
             videos_nb = videos.total
             views_nb = videos.total_views
             reports_nb = videos.total_reports
-            return auth('admin.html', success=success, reports=reports, users_nb=users_nb, videos_nb=videos_nb, views_nb=views_nb, reports_nb=reports_nb)
+            notifs = notifications.get('admins')
+            return auth('admin.html', success=success, reports=reports, users_nb=users_nb, videos_nb=videos_nb, views_nb=views_nb, reports_nb=reports_nb, notifs=notifs)
     return redirect('/log')
 
 
@@ -346,6 +348,19 @@ def postVideo():
         video.save(f'data/videos/{video_string}')
         videos.add(user['_id'], description, tags, video_string)
         return redirect(f'/home?video={video_string}')
+    return redirect('/log')
+
+
+@app.route('/ask-certify', methods=['POST'])
+def askCertify():
+    logged, user = is_logged()
+    if logged:
+        form = request.form
+        why = form['why']
+        email = user['email']
+        mails.send_mail(email, 'Demande de certification prise en compte', templates.base.format(email=email, content=f"Nous avons bien reçu ta demande de certification pour le compte trickstok @{user['username']}.<br>Nous traiterons ta demande sous peu..."))
+        notifications.add('admins', f"Demande de certification de @{user['username']}.\n\n{why}")
+        return redirect(f'/home#account')
     return redirect('/log')
 
 

@@ -213,6 +213,7 @@
       <div class="container profil">
           <div class="profile">
               <button class="button is-primary is-small is-square is-rounded" onclick="document.getElementById('modify-account').classList.add('is-active')" style="position: absolute; right: 1.5em; top: 1.5em"><i class="fas fa-edit"></i></button>
+              <button class="button is-third is-small is-square is-rounded" onclick="document.getElementById('settings-account').classList.add('is-active')" style="position: absolute; left: 1.5em; top: 1.5em"><i class="fas fa-cog fa-lg"></i></button>
               <div class="image">
                   <img src="/media/pdp/{{user.photo}}" alt="{{user.username}}" class="photo large">
               </div>
@@ -249,8 +250,8 @@
             <form method="post" action="/modify" enctype="multipart/form-data">
               <section class="section has-padding">
                 <button type="button" class="modal-close is-large" onclick="document.getElementById('modify-account').classList.remove('is-active')" aria-label="close"></button>
-                <h2 class="title is-2">Modifie ton profile</h2>
-                <p class="subtitle is-6">Change le look de ton profile !</p>
+                <h2 class="title is-2">Modifie ton profil</h2>
+                <p class="subtitle is-6">Change le look de ton profil !</p>
 
                 <div class="field">
                   <label class="label">Nom Complet</label>
@@ -387,6 +388,53 @@
                         })
                 }
             </script>
+          </div>
+        </div>
+        <div class="modal" id="settings-account">
+          <div class="modal-background"></div>
+          <div class="modal-content">
+            <section class="section has-padding" style="height: auto">
+              <button type="button" class="modal-close is-large" onclick="document.getElementById('settings-account').classList.remove('is-active')" aria-label="close"></button>
+              <h2 class="title is-2">Paramètres</h2>
+              <p class="subtitle is-6">Paramètres et action du profil</p>
+              <hr>
+              {% if not user.certified %}
+              <form method="post" action="/ask-certify">
+                <h1 class="title is-3">Demander une certification</h1>
+                <p class="subtitle is-6">Ce compte est dédié à une association, entreprise, une personne avec une communauté ou autre... Tu peux demander à te faire certifier !</p>
+                <div class="field">
+                  <label class="label">Informations complémentaires</label>
+                  <div class="control">
+                    <textarea class="textarea" name="why" required></textarea>
+                  </div>
+                  <p class="help is-info">Rempli ce champ avec des liens ou des informations sur toi. Tu peux simplement y insérer le lien de ton instagram.</p>
+                </div>
+                <p>Je deviens @{{user.username}}&nbsp;<i class="fas fa-badge-check"></i></p>
+                <button class="button is-third">Demander ma certification</button>
+              </form>
+              {% else %}
+              <h1 class="title is-3">Demander une certification</h1>
+              <p class="subtitle is-6">@{{user.username}}&nbsp;<i class="fas fa-badge-check"></i> est déjà un compte certifié par TricksTok...</p>
+              {% endif %}
+              <br>
+              <br>
+              <form method="post" action="/get-my-data">
+                <h1 class="title is-3">Récupérer mes données</h1>
+                <p class="subtitle is-6">Nous sommes dans l'obligation de vous permettre de télécharger vos données, cliquez si dessous pour récupérer un résumé de vos données.</p>
+                <button class="button is-third">Télécharger mes données</button>
+              </form>
+              <br>
+              <br>
+              <form method="post" action="/delete-my-account">
+                <h1 class="title is-3">Supprimer mon compte</h1>
+                <p class="subtitle is-6">Trickstok te lasse ? Tu en as marre ? Même si nous en sommes tristes tu peux supprimer ton compte.</p>
+                <label class="checkbox">
+                  <input type="checkbox" required>
+                  En cochant cette case, j'accepte que mes données seront <b>supprimées immédiatement</b> et qu'<b>aucun retour arrière est possible</b>.
+                </label>
+                <button class="button is-primary">Supprimer mon compte</button>
+              </form>
+            </section>
           </div>
         </div>
       </div>

@@ -731,7 +731,7 @@ strong {
     padding-bottom: .5em;
 }
 
-#modify-account .modal-content {
+#modify-account .modal-content, #settings-account .modal-content {
     width: 97%;
     border-radius: 11px;
 }
