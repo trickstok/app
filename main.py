@@ -108,7 +108,7 @@ def home():
 
 
 @app.route('/prelogin', methods=['POST'])
-def beta_access():
+def betaAccess():
     form = request.form
     email = form['email']
     content = templates.base.format(email=email, content=templates.betalog)
@@ -136,7 +136,7 @@ def moderation():
 
 
 @app.route('/terms')
-def terms_and_conditions():
+def termsAndConditions():
     return render_template('terms_and_conditions.html')
 
 
@@ -146,7 +146,7 @@ def CGU():
 
 
 @app.route('/admin/users')
-def moderation_users():
+def moderationUsers():
     logged, user = is_logged()
     if logged:
         if user['administrator']:
@@ -159,7 +159,7 @@ def moderation_users():
 
 
 @app.route('/admin/mails')
-def moderation_mails():
+def moderationMails():
     logged, user = is_logged()
     if logged:
         if user['administrator']:
@@ -174,7 +174,7 @@ def moderation_mails():
 
 
 @app.route('/admin/ban', methods=['POST'])
-def ban_user():
+def banUser():
     logged, user = is_logged()
     if logged:
         if user['administrator']:
@@ -212,7 +212,7 @@ def ban_user():
 
 
 @app.route('/admin/certify', methods=['POST'])
-def certify_user():
+def certifyUser():
     logged, user = is_logged()
     if logged:
         if user['administrator']:
@@ -224,7 +224,7 @@ def certify_user():
 
 
 @app.route('/u/<username>')
-def user_page(username):
+def userPage(username):
     user = users.find_by_username(username)
     user_videos = videos.find_by_user(user['_id'])
     return auth('profile.html', profile=user, videos=user_videos)
@@ -251,7 +251,7 @@ def connect():
 
 
 @app.route('/reg')
-def register_ui():
+def registerUi():
     return render_template('register.html')
 
 
@@ -270,7 +270,7 @@ def login():
 
 
 @app.route('/username-is-available')
-def is_available():
+def isAvailable():
     username = request.args.get('username')
     user = users.find_by_username(username)
     if user:
@@ -300,7 +300,7 @@ def register():
 
 
 @app.route('/modify', methods=['POST'])
-def update_profile():
+def updateProfile():
     logged, user = is_logged()
     if logged:
         form = request.form
@@ -439,7 +439,7 @@ def stream(path):
 
 
 @app.route('/media/<type>/<file>')
-def deliver_media(type, file):
+def deliverMedia(type, file):
     logged, user = is_logged()
     if logged:
         if type == 'videos':
