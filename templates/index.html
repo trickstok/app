@@ -32,6 +32,10 @@
                           <strong>Mode plein écran</strong>
                           <button onclick="fullScreen()" class="button is-small is-third is-limited">Activer</button>
                         </div>
+                        <div class="overlay-more-section">
+                          <strong>Recharger</strong>
+                          <button onclick="location.href = '/home'" class="button is-small is-secondary is-limited">Recharger la page</button>
+                        </div>
                         <strong>Signaler la vidéo:</strong>
                         <form action="/signal/" onsubmit="addVideoIDToPath(this, '/signal/')" method="post" class="overlay-more-section">
                           <p>Commentaire:</p>
