@@ -108,7 +108,9 @@ function search() {
                 html += `
                 <div class="video-card">
                   <div class="video-media" onclick="location.href = '/home?video=${result.video_id}'">
-                    <video src="/media/videos/${result.video_id}"></video>
+                    <video>
+                        <source src="/media/videos/${result.video_id}#t=1" type="video/mp4" />
+                    </video>
                   </div>
                   <div class="video-footer">
                     <p class="desc">
