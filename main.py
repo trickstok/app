@@ -482,6 +482,11 @@ def licence():
     return send_file('LICENSE')
 
 
+@app.route('/download')
+def downloadApp():
+    return send_file('mobile-app/app/release/app-release.apk')
+
+
 @app.route('/terms')
 def termsAndConditions():
     return render_template('terms_and_conditions.html')

@@ -1,3 +1,6 @@
 [submodule "load_balancer"]
 	path = load_balancer
 	url = https://github.com/inlets/mixctl.git
+[submodule "mobile-app"]
+	path = mobile-app
+	url = https://github.com/trickstok/mobile-app
