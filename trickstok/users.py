@@ -2,7 +2,7 @@ import datetime
 import hashlib
 import locale
 import secrets
-from zipfile import ZipFile, ZipInfo
+from zipfile import ZipFile
 
 from pymongo.collection import ObjectId
 from trickstok import DatabaseObject
