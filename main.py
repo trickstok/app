@@ -7,7 +7,7 @@ import sys
 import conf
 import flask
 import markdown
-from flask import Flask, request, redirect, render_template, make_response, send_file, Response
+from flask import Flask, request, redirect, render_template, make_response, send_file
 from trickstok import Users, Videos, Mailer, Template, Notifications
 
 locale.setlocale(locale.LC_ALL, "fr_FR.UTF-8")
@@ -44,16 +44,6 @@ def is_logged():
     return False, {}
 
 
-@app.route('/')
-def presentation():
-    return render_template('landing.html')
-
-
-@app.route('/licence')
-def licence():
-    return send_file('LICENSE')
-
-
 def get_article(name):
     post_file = open(f'blog/{name}')
     content = "".join(post_file.readlines()[1:])
@@ -70,9 +60,14 @@ def get_articles():
     all_posts = os.listdir('blog/')
     articles = []
     for post in all_posts:
-        if os.path.isfile(f'blog/{post}') and not 'draft' in post:
+        if os.path.isfile(f'blog/{post}') and post not in 'draft':
             articles.append(get_article(post))
     return articles
+
+
+@app.route('/')
+def presentation():
+    return render_template('landing.html')
 
 
 @app.route('/blog')
@@ -135,25 +130,6 @@ def moderation():
     return redirect('/log')
 
 
-@app.route('/terms')
-def termsAndConditions():
-    return render_template('terms_and_conditions.html')
-
-
-@app.route('/cgu')
-def CGU():
-    return render_template('cgu.html')
-
-
-@app.route('/get-my-data')
-def getUserDatas():
-    logged, user = is_logged()
-    if logged:
-        user_videos = videos.find_by_user(user['_id'])
-        return send_file(users.get_data_of(user['username'], user_videos))
-    return redirect('/log')
-
-
 @app.route('/admin/users')
 def moderationUsers():
     logged, user = is_logged()
@@ -206,7 +182,7 @@ def banUser():
             else:
                 date = True
             users.ban(username, date, today, user['username'], reason)
-            if date == True:
+            if date and type(date) == bool:
                 type = 'définitif'
                 after = '.'
             else:
@@ -217,6 +193,19 @@ def banUser():
             content = templates.banned.format(type=type, end=after, reason=reason)
             mails.send_mail(user_email, 'TricksTok - Bannissement', content)
             return redirect('/admin?success=y')
+    return redirect('/log')
+
+
+@app.route('/ask-certify', methods=['POST'])
+def askCertify():
+    logged, user = is_logged()
+    if logged:
+        form = request.form
+        why = form['why']
+        email = user['email']
+        mails.send_mail(email, 'Demande de certification prise en compte', templates.base.format(email=email, content=f"Nous avons bien reçu ta demande de certification pour le compte trickstok @{user['username']}.<br>Nous traiterons ta demande sous peu..."))
+        notifications.add('admins', f"Demande de certification de @{user['username']}.\n\n{why}")
+        return redirect(f'/home#account')
     return redirect('/log')
 
 
@@ -239,11 +228,6 @@ def userPage(username):
     return auth('profile.html', profile=user, videos=user_videos)
 
 
-@app.route('/service-worker.js')
-def sendWorker():
-    return flask.send_file('static/js/pwa/service-worker.js')
-
-
 @app.route('/search')
 def search():
     query = request.args.get('q')
@@ -259,11 +243,6 @@ def connect():
     return render_template('connect.html')
 
 
-@app.route('/reg')
-def registerUi():
-    return render_template('register.html')
-
-
 @app.route('/login', methods=['POST'])
 def login():
     form = request.form
@@ -276,15 +255,6 @@ def login():
         response.set_cookie('username', user[1]['username'])
         return response
     return redirect('/log')
-
-
-@app.route('/username-is-available')
-def isAvailable():
-    username = request.args.get('username')
-    user = users.find_by_username(username)
-    if user:
-        return {"username": username, "available": False}
-    return {"username": username, "available": True}
 
 
 @app.route('/register', methods=['POST'])
@@ -308,6 +278,20 @@ def register():
     return response
 
 
+@app.route('/reg')
+def registerUi():
+    return render_template('register.html')
+
+
+@app.route('/username-is-available')
+def isAvailable():
+    username = request.args.get('username')
+    user = users.find_by_username(username)
+    if user:
+        return {"username": username, "available": False}
+    return {"username": username, "available": True}
+
+
 @app.route('/modify', methods=['POST'])
 def updateProfile():
     logged, user = is_logged()
@@ -329,6 +313,15 @@ def updateProfile():
             photo_string = user['photo']
         users.update(user['username'], email, username, fullname, interests, photo_string, bio)
         return redirect('/home#account')
+    return redirect('/log')
+
+
+@app.route('/get-my-data')
+def getUserDatas():
+    logged, user = is_logged()
+    if logged:
+        user_videos = videos.find_by_user(user['_id'])
+        return send_file(users.get_data_of(user['username'], user_videos))
     return redirect('/log')
 
 
@@ -362,19 +355,6 @@ def postVideo():
         video.save(f'data/videos/{video_string}')
         videos.add(user['_id'], description, tags, video_string)
         return redirect(f'/home?video={video_string}')
-    return redirect('/log')
-
-
-@app.route('/ask-certify', methods=['POST'])
-def askCertify():
-    logged, user = is_logged()
-    if logged:
-        form = request.form
-        why = form['why']
-        email = user['email']
-        mails.send_mail(email, 'Demande de certification prise en compte', templates.base.format(email=email, content=f"Nous avons bien reçu ta demande de certification pour le compte trickstok @{user['username']}.<br>Nous traiterons ta demande sous peu..."))
-        notifications.add('admins', f"Demande de certification de @{user['username']}.\n\n{why}")
-        return redirect(f'/home#account')
     return redirect('/log')
 
 
@@ -431,10 +411,10 @@ def stream(path):
 
     content_length = end - start + 1
 
-    def get_chunk(video_path, start, end):
-        with open(video_path, "rb") as f:
-            f.seek(start)
-            chunk = f.read(end)
+    def get_chunk(chunk_video_path, chunk_start, chunk_end):
+        with open(chunk_video_path, "rb") as f:
+            f.seek(chunk_start)
+            chunk = f.read(chunk_end)
         return chunk
 
     headers = {
@@ -447,15 +427,15 @@ def stream(path):
     return app.response_class(get_chunk(video_path, start, end), 206, headers)
 
 
-@app.route('/media/<type>/<file>')
-def deliverMedia(type, file):
+@app.route('/media/<filetype>/<file>')
+def deliverMedia(filetype, file):
     logged, user = is_logged()
     if logged:
-        if type == 'videos':
+        if filetype == 'videos':
             if file != 'banned.mp4':
                 videos.find_by_id(file).add_view(user['_id'])
-            return stream(f'data/{type}/{file}')
-        return send_file(f'data/{type}/{file}')
+            return stream(f'data/{filetype}/{file}')
+        return send_file(f'data/{filetype}/{file}')
     return ""
 
 
@@ -474,6 +454,26 @@ def watch():
 @app.route('/favicon.ico')
 def favicon():
     return flask.send_file('static/assets/trickstok_logo_trans.png')
+
+
+@app.route('/service-worker.js')
+def sendWorker():
+    return flask.send_file('static/js/pwa/service-worker.js')
+
+
+@app.route('/licence')
+def licence():
+    return send_file('LICENSE')
+
+
+@app.route('/terms')
+def termsAndConditions():
+    return render_template('terms_and_conditions.html')
+
+
+@app.route('/cgu')
+def CGU():
+    return render_template('cgu.html')
 
 
 if __name__ == '__main__':
