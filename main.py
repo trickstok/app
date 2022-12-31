@@ -183,14 +183,14 @@ def banUser():
                 date = True
             users.ban(username, date, today, user['username'], reason)
             if date and type(date) == bool:
-                type = 'définitif'
+                ban_type = 'définitif'
                 after = '.'
             else:
-                type = 'temporaire'
+                ban_type = 'temporaire'
                 today_string = today.strftime("%A %-d %B")
                 date_string = date.strftime("%A %-d %B")
                 after = f' et durera du {today_string} au {date_string}.'
-            content = templates.banned.format(type=type, end=after, reason=reason)
+            content = templates.banned.format(type=ban_type, end=after, reason=reason)
             mails.send_mail(user_email, 'TricksTok - Bannissement', content)
             return redirect('/admin?success=y')
     return redirect('/log')
