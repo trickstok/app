@@ -162,3 +162,47 @@ nav.navbar {
 .fa-badge-check path {
     color: var(--blue);
 }
+
+.fa-flag path {
+    color: var(--red);
+}
+
+.section {
+    box-sizing: inherit !important;
+    background-color: var(--primary);
+    width: 100%;
+    height: 100%;
+    color: var(--primaryBC) !important;
+    padding: 3rem 1.5rem;
+}
+
+.modal-content {
+    width: 97%;
+    border-radius: 11px;
+}
+
+.video {
+    width: 18em;
+    height: 32em;
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--primaryBC);
+    border-radius: 5px;
+}
+
+.video video {
+    max-height: 32em;
+    width: 100% !important;
+    object-fit: cover;
+}
+
+div.centered {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+}

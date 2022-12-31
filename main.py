@@ -120,7 +120,6 @@ def moderation():
             if request.args.get('success'):
                 success = True if request.args.get('success') == 'y' else False
             reports = videos.get_reported()
-            print(reports)
             users_nb = users.total
             videos_nb = videos.total
             views_nb = videos.total_views
@@ -155,6 +154,16 @@ def moderationMails():
                 emails = list(mails.get_list_mails(liste))
                 mailing_campagnes.append({'name': liste, 'mails': emails, 'number': len(emails)})
             return auth('admin_mails.html', campagnes=mailing_campagnes, total=total)
+    return redirect('/log')
+
+
+@app.route('/admin/report/<report>', methods=['POST'])
+def moderationDeleteReport(report):
+    logged, user = is_logged()
+    if logged:
+        if user['administrator']:
+            videos.delete_report(report)
+            return redirect('/admin')
     return redirect('/log')
 
 
@@ -338,6 +347,13 @@ def deleteVideo(video):
         if video.video['user']['username'] == user['username']:
             video.delete()
             return redirect('/home#account')
+        elif user['administrator']:
+            video_user = video.video['user']
+            administrator = user['username']
+            content = f"Ta vidéo avec la description \"{video.video['description']}\" à été supprimée par l'administrateur @{administrator}.<br>Pour plus d'information à ce propos tu peux nous contacter..."
+            mails.send_mail(video_user['email'], 'Ta vidéo à été supprimée', templates.base.format(email=video_user['username'], content=content))
+            video.delete()
+            return redirect('/admin')
     return redirect('/log')
 
 

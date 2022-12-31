@@ -117,18 +117,44 @@
                   <tbody>
                   {% for report in reports %}
                   <tr>
-                    <td><i class="fa fa-bell-o"></i></td>
-                    <td>{{report.reason}} by {{report.user.username}}</td>
-                    <td class="level-right"><a class="button is-small is-third" href="#">Ouvrir</a></td>
+                    <td><i class="fas fa-flag"></i></td>
+                    <td>{{report.reason}} par {{report.user.username}}</td>
+                    <td class="level-right"><a class="button is-small is-third" href="#" onclick="openModal('{{report._id}}')">Ouvrir</a></td>
                   </tr>
+                  <div class="modal" id="{{report._id}}">
+                    <div class="modal-background"></div>
+                    <div class="modal-content">
+                      <button type="button" class="modal-close is-large" onclick="document.getElementById('modify-account').classList.remove('is-active')" aria-label="close"></button>
+                      <section class="section has-padding">
+                        <h1 class="title">Signalement de @{{report.video.video.user.username}}{% if report.video.video.user.certified %}&nbsp;<i class="fas fa-badge-check"></i>{% endif %}</h1>
+                        <p class="subtitle">@{{report.user.username}}{% if report.user.certified %}&nbsp;<i class="fas fa-badge-check"></i>{% endif %} à signaler la vidéo de @{{report.video.video.user.username}}{% if report.video.video.user.certified %}&nbsp;<i class="fas fa-badge-check"></i>{% endif %} pour "{{report.reason}}"</p>
+                        <div class="centered">
+                          <div class="video">
+                            <video src="/media/videos/{{report.video.video.video_id}}" autoplay playsinline loop poster="/static/assets/loader.png"></video>
+                          </div>
+                          <p><a href="https://trickstok.camarm.fr/home?video={{report.video.video.video_id}}" target="_blank">https://trickstok.camarm.fr/home?video={{report.video.video.video_id}}</a></p>
+                        </div>
+                        <div class="field">
+                          <form action="/delete/{{report.video.video.video_id}}" method="get">
+                            <button class="button is-primary">Supprimer la vidéo</button>
+                          </form>
+                        </div>
+                        <div class="field">
+                          <form action="/admin/report/{{report._id}}" method="post">
+                            <button class="button is-secondary">Ignorer le signalement</button>
+                          </form>
+                        </div>
+                        <div class="field is-grouped"></div>
+                        <button class="button is-third" onclick="navigator.clipboard.writeText('{{report.user.username}}')">Copier le nom d'utilisateur de celui qui a signaler (@{{report.user.username}})</button>
+                        <button class="button is-third" onclick="navigator.clipboard.writeText('{{report.video.video.user.username}}')">Copier le nom d'utilisateur du signalé (@{{report.video.video.user.username}})</button>
+                      </section>
+                    </div>
+                  </div>
                   {% endfor %}
                   </tbody>
                 </table>
               </div>
             </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">View All</a>
-            </footer>
           </div>
           <div class="card events-card">
             <header class="card-header">
@@ -250,7 +276,15 @@
     </div>
   </div>
 </div>
-<!--<script async type="text/javascript" src="../js/bulma.js"></script>-->
+<script>
+  function openModal(id) {
+      document.getElementById(id).classList.add('is-active')
+  }
+
+  function closeModal(id) {
+      document.getElementById(id).classList.remove('is-active')
+  }
+</script>
 </body>
 
 </html>

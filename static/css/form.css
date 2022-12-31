@@ -23,7 +23,7 @@
 
 .button.is-secondary {
     background-color: var(--yellow) !important;
-    color: var(--primary) !important;
+    color: var(--primaryBC) !important;
 }
 
 .button.is-third {

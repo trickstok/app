@@ -38,11 +38,14 @@ class Videos(DatabaseObject):
         return list(videos)
 
     def get_reported(self):
-        reported = self.db.reports.find({})
+        reported = list(self.db.reports.find({}))
         for report in reported:
             report['video'] = self.find_by_object_id(report['video'])
             report['user'] = self.db.users.find_one({'_id': report['user']})
-        return list(reported)
+        return reported
+
+    def delete_report(self, _id):
+        self.db.reports.delete_one({'_id': ObjectId(_id)})
 
     def find_by_object_id(self, _id):
         return Video(self.db.videos.find_one({"_id": ObjectId(_id)}), self.db)
