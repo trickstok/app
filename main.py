@@ -145,6 +145,15 @@ def CGU():
     return render_template('cgu.html')
 
 
+@app.route('/get-my-data')
+def getUserDatas():
+    logged, user = is_logged()
+    if logged:
+        user_videos = videos.find_by_user(user['_id'])
+        return send_file(users.get_data_of(user['username'], user_videos))
+    return redirect('/log')
+
+
 @app.route('/admin/users')
 def moderationUsers():
     logged, user = is_logged()
