@@ -84,8 +84,8 @@ For advanced deployment with multiple instances and a load balancer you can use 
 
 This script will create config file for each instance and load_balancer rules.
 
-It will also create instances/start.sh that will start every instance and the loadbalancer at the same time.
-You can move this start.sh in scripts/start.sh and execute `make install` to make every instance and load balancer start at boot
+It will also create instances/start_all.sh that will start every instance and the loadbalancer at the same time.
+You can move this start_all.sh file in scripts/start.sh and execute `make install-service` to make every instance and load balancer start at boot.
 
 options:
 ```
