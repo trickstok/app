@@ -1,0 +1,3 @@
+#! /bin/sh
+
+python3 -c 'import unit_tests.build as test; test.start()' --config config.ini
