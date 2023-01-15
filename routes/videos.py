@@ -1,3 +1,8 @@
+import secrets
+import shutil
+
+import cv2
+
 from utils import *
 
 
@@ -41,6 +46,19 @@ class VideosRoutes(Route):
                 video_ext = video.filename.split('.')[-1]
                 video_string = f"{video_id}.{video_ext}"
                 video.save(f'data/videos/{video_string}')
+                video_object = cv2.VideoCapture(f'data/videos/{video_string}')
+                fps = video_object.get(cv2.CAP_PROP_FPS)
+                video_object.set(cv2.CAP_PROP_POS_FRAMES, fps)
+                success, frame = video_object.read()
+                if fps == 60:
+                    cv2.waitKey(6000)
+                else:
+                    cv2.waitKey(1)
+                if success:
+                    cv2.imwrite(f'data/thumbnails/{video_string}.png', frame, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+                    video_object.release()
+                else:
+                    shutil.copy('static/assets/loader.png', f'data/thumbnails/{video_string}.png')
                 videos.add(user['_id'], description, tags, video_string)
                 return redirect(f'/home?video={video_string}')
             return redirect('/log')

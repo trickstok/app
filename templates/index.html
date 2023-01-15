@@ -235,7 +235,7 @@
             <div class="video-card">
               <div class="video-media" onclick="location.href = '/home?video={{video.video_id}}'">
                 <video>
-                  <source src="/media/videos/{{video.video_id}}#t=1" type="video/mp4" />
+                  <source src="/media/videos/{{video.video_id}}/thumbnail" type="video/mp4" />
                 </video>
               </div>
               <div class="video-footer">
@@ -527,13 +527,6 @@
         }, 2000)
     }
 
-    function animup() {
-        video.setAttribute('class', 'video down')
-        setTimeout(() => {
-            video.setAttribute('class', 'video')
-        }, 2000)
-    }
-
     function swipedown(video=document.querySelector('.video')) {
         playPauseIcon.classList.remove('active')
         playPauseIcon.style = 'display: none'
@@ -610,6 +603,7 @@
             changePage(window.location.hash.replace('#', ''))
         }
         document.querySelector('.screenloader').classList.add('disable')
+        fetchNextVideo()
     })
 
     function fullScreen() {

@@ -52,6 +52,13 @@ class VideoFilesRoutes(Route):
                 return send_file(f'data/{filetype}/{file}')
             return ""
 
+        @self.app.route('/media/videos/<video>/thumbnail')
+        def deliverThumbnail(video):
+            logged, user = is_logged()
+            if logged:
+                return send_file(f'data/thumbnails/{video}.png')
+            return ""
+
         @self.app.route('/watch')
         def watch():
             logged, user = is_logged()
