@@ -211,8 +211,11 @@ function loadNewVideo() {
           </div>`
             commentsList.insertAdjacentHTML("afterbegin", html);
         }
-        video.poster = `/media/videos/${videoID}/thumbnail`
-        setTimeout(() => {video.src = `/media/videos/${videoID}`}, 500)
+
+        setTimeout(() => {
+            video.poster = `/media/videos/${videoID}/thumbnail`
+            video.src = `/media/videos/${videoID}`
+        }, 1000)
     }
 
     load().then(() => {
