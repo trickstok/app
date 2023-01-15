@@ -1,4 +1,4 @@
-let tags_string, html, username
+let tags_string, html, username, load
 
 var video = document.querySelector(".video");
 video.onchange = function () {
@@ -17,6 +17,7 @@ const likes = document.querySelector('.icon-label.likes')
 const comment = document.querySelector('.icon-label.comments')
 const to_profile = document.querySelectorAll('.to-profile')
 const searchInput = document.getElementById('searchinput')
+var nextVideoObject
 
 function open(el) {
     username = el.getAttribute('link')
@@ -109,7 +110,7 @@ function search() {
                 <div class="video-card">
                   <div class="video-media" onclick="location.href = '/home?video=${result.video_id}'">
                     <video>
-                        <source src="/media/videos/${result.video_id}#t=1" type="video/mp4" />
+                        <source src="/media/videos/${result.video_id}/thumbnail" type="video/mp4" />
                     </video>
                   </div>
                   <div class="video-footer">
@@ -159,51 +160,63 @@ function search() {
         })
 }
 
-function loadNewVideo() {
-
+function fetchNextVideo() {
     fetch(`/watch?different_of=${videoID}`)
         .then(resp => resp.json())
         .then(data => {
-            likesIcon.classList.remove('active')
-            videoObject = data.data
-            if (videoObject.liked) {
-                likesIcon.classList.add('active')
-            }
-            // history.push(videoObject)
-            videoID = videoObject.video_id
-            video.setAttribute('data-id', videoID)
-            tags_string = ''
-            for (const tag of videoObject.tags) {
-                tags_string += `#${tag} `
-            }
-            description.innerText = `${videoObject.description} ${tags_string}`
-            user.innerText = `${videoObject.user.username}`
-            if (videoObject.user.certified) {
-                user.innerHTML += '&nbsp;<i class="fas fa-badge-check"></i>'
-            }
-            userPp.src = `/media/pdp/${videoObject.user.photo}`
-            to_profile.forEach(el => {
-                el.setAttribute('link', videoObject.user.username)
-            })
-            likes.innerText = videoObject.likes_count
-            commentsCount.innerText = `${videoObject.comment_count} commentaires`
-            commentsCount2.innerText = videoObject.comment_count
-            commentsList.innerHTML = ''
-            for (const comment of videoObject.comments) {
-                html = `
-                <div class="comments-item">
-                    <span class="comment-top">
-                      <span class="comment-top-logo image is-rounded"><img src="/media/pdp/${comment.user.photo}" class="photo is-rounded"></span>
-                      <span class="comment-top-details">
-                        <span class="user-name">${comment.user.fullname}</span>
-                        <span class="user-time">${comment.user.username}</span>
-                        <span class="user-comment">${comment.content}</span>
-                      </span>
-                    </span>
-                  </div>`
-                commentsList.insertAdjacentHTML("afterbegin", html);
-            }
-            setTimeout(() => {video.src = `/media/videos/${videoID}`}, 500)
+            nextVideoObject = data.data
+            document.createElement('img').src = `/media/videos/${nextVideoObject.video_id}/thumbnail`
+        })
+}
+
+function loadNewVideo() {
+    // Swipe -> loadNewVideo (affiche video) -> fetchNextVideo (charge la thumbnail de la prochaine vidéo)
+
+    load = async () => {
+        likesIcon.classList.remove('active')
+        videoObject = nextVideoObject
+        if (videoObject.liked) {
+            likesIcon.classList.add('active')
+        }
+        videoID = videoObject.video_id
+        video.setAttribute('data-id', videoID)
+        tags_string = ''
+        for (const tag of videoObject.tags) {
+            tags_string += `#${tag} `
+        }
+        description.innerText = `${videoObject.description} ${tags_string}`
+        user.innerText = `${videoObject.user.username}`
+        if (videoObject.user.certified) {
+            user.innerHTML += '&nbsp;<i class="fas fa-badge-check"></i>'
+        }
+        userPp.src = `/media/pdp/${videoObject.user.photo}`
+        to_profile.forEach(el => {
+            el.setAttribute('link', videoObject.user.username)
+        })
+        likes.innerText = videoObject.likes_count
+        commentsCount.innerText = `${videoObject.comment_count} commentaires`
+        commentsCount2.innerText = videoObject.comment_count
+        commentsList.innerHTML = ''
+        for (const comment of videoObject.comments) {
+            html = `
+        <div class="comments-item">
+            <span class="comment-top">
+              <span class="comment-top-logo image is-rounded"><img src="/media/pdp/${comment.user.photo}" class="photo is-rounded"></span>
+              <span class="comment-top-details">
+                <span class="user-name">${comment.user.fullname}</span>
+                <span class="user-time">${comment.user.username}</span>
+                <span class="user-comment">${comment.content}</span>
+              </span>
+            </span>
+          </div>`
+            commentsList.insertAdjacentHTML("afterbegin", html);
+        }
+        video.poster = `/media/videos/${videoID}/thumbnail`
+        setTimeout(() => {video.src = `/media/videos/${videoID}`}, 500)
+    }
+
+    load().then(() => {
+            fetchNextVideo()
         })
 }
 
