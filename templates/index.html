@@ -542,10 +542,48 @@
         video.setAttribute('id', comments_ids[number])
     }
 
+    function swipeRight() {
+        if (location.hash === '#home' || location.hash === "") {
+            share()
+            return
+        }
+        if (location.hash === '#search') {
+            changePage('home')
+            return
+        }
+        if (location.hash === '#messages') {
+            changePage('search')
+            return
+        }
+        if (location.hash === '#account') {
+            changePage('messages')
+            return
+        }
+    }
+
+    function swipeLeft() {
+        if (location.hash === '#home') {
+            changePage('search')
+            return
+        }
+        if (location.hash === '#search') {
+            changePage('messages')
+            return
+        }
+        if (location.hash === '#messages') {
+            changePage('account')
+            return
+        }
+    }
+
     const swiper = new Swipe(document.querySelector('#home'))
     // swiper.onDown(swipeup)
     swiper.onUp(swipedown)
     swiper.run()
+    const pageSwiper = new Swipe(document.querySelector('#all'))
+    pageSwiper.onRight(swipeRight)
+    pageSwiper.onLeft(swipeLeft)
+    pageSwiper.run()
 
     function changePause(icon, persistant) {
         playPauseIcon = document.getElementById('playpauseicon')
@@ -584,7 +622,7 @@
             navigator.share(data)
         } else {
             navigator.clipboard.writeText(`${link}`);
-            alert('Lien copié dans le presse papier !')
+            alert('Lien de partage copié dans le presse papier !')
         }
     }
 
