@@ -574,7 +574,7 @@
     }
 
     async function share() {
-        link = window.location.method + window.location.host + `/home?video=${video.getAttribute('src')}`
+        link = window.location.protocol + '//' + window.location.host + `/home?video=${video.getAttribute('src').split('/')[3]}`
         if (navigator.canShare) {
             const data = {
                 title: `TricksTok, vidéo ${video.src} !`,
