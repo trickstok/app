@@ -321,7 +321,7 @@ body {
 }
 
 .icons {
-    height: 64px;
+    height: 100%;
     width: 100%;
     background-color: var(--primaryBC);
     display: flex;
@@ -787,7 +787,7 @@ strong {
 }
 
 .videos {
-    height: 65vh;
+    padding-bottom: 64px;
     background: #F7FFF7;
     flex-direction: row;
     width: 100%;
