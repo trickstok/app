@@ -22,7 +22,7 @@ class Template:
     """
 
     betalog = """
-    Tout d’abord merci de t’être inscris à la beta access 🙏. En mi-janvier (normalement 😅) tu recevra un email contenant tous ce dont tu aura besoin pour accéder et mener à bien ta première expérience sur TricksTok en beta access.<br>
+    Tout d’abord merci de t’être inscris à la beta access 🙏. En mi-février (normalement 😅) tu recevra un email contenant tous ce dont tu aura besoin pour accéder et mener à bien ta première expérience sur TricksTok en beta access.<br>
     En attendant, tu peux nous visiter de temps en temps sur YouTube (<a href="https://youtube.com/@trickstok">https://youtube.com/@trickstok</a>) pour savoir où on en est 😊 !<br>
     """
 
@@ -48,7 +48,7 @@ class Mailer(DatabaseObject):
         return self.mails.count_documents({})
 
     def add_to_list(self, email, list, callback=None, args={}):
-        if self.mails.find_one({'email': email, 'list': list}) is not None:
+        if self.mails.find_one({'mail': email, 'list': list}) is None:
             self.mails.insert_one({'mail': email, 'list': list})
             if callback is not None:
                 callback(**args)
