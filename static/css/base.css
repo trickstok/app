@@ -210,10 +210,18 @@ body {
     margin: unset !important;
 }
 
+.container.container-video {
+    max-height: 100vh;
+    overflow: hidden;
+}
+
 .video {
-    width: auto;
-    object-fit: contain;
+    width: 100%;
+    object-fit: cover;
     background: var(--bg);
+    max-height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .top {
@@ -682,11 +690,11 @@ strong {
         opacity: 100%;
     }
     49% {
-        margin-bottom: 32em;
+        margin-bottom: 100vh;
         opacity: 0%;
     }
     50% {
-        margin-bottom: -32em;
+        margin-bottom: -100vh;
         opacity: 0%;
     }
     100% {
