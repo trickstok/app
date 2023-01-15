@@ -16,7 +16,7 @@
       {% for video in videos %}
       <div class="video-card" onclick="location.href = '/home?video={{video.video_id}}'">
         <div class="video-media">
-          <video>
+          <video poster="/media/videos/{{video.video_id}}/thumbnail">
             <source src="/media/videos/{{video.video_id}}/thumbnail" type="video/mp4" />
           </video>
         </div>
@@ -30,8 +30,8 @@
           </p>
           <div class="actions">
             <div class="views"><i class="fas fa-eye"></i>&nbsp;{{video.views}}</div>
-            <div class="likes" ><i class="fas fa-heart"></i>&nbsp;{{video.likes_count}}</div>
-            <div class="comments" ><i class="fas fa-comment"></i>&nbsp;{{video.comment_count}}</div>
+            <div class="likes"><i class="fas fa-heart"></i>&nbsp;{{video.likes_count}}</div>
+            <div class="comments"><i class="fas fa-comment"></i>&nbsp;{{video.comment_count}}</div>
           </div>
         </div>
       </div>

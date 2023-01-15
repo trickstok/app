@@ -234,7 +234,7 @@
             {% for video in user.videos %}
             <div class="video-card">
               <div class="video-media" onclick="location.href = '/home?video={{video.video_id}}'">
-                <video>
+                <video poster="/media/videos/{{video.video_id}}/thumbnail">
                   <source src="/media/videos/{{video.video_id}}/thumbnail" type="video/mp4" />
                 </video>
               </div>

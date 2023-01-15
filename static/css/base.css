@@ -781,8 +781,13 @@ strong {
     object-position: center;
     object-fit: cover;
 }
+
+#results-users-tab, #results-videos-tab {
+    height: 71vh
+}
+
 .videos {
-    height: 68vh;
+    height: 65vh;
     background: #F7FFF7;
     flex-direction: row;
     width: 100%;
