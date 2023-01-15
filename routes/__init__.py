@@ -17,8 +17,9 @@ def build(app):
         try:
             print(f'\033[1mBuilding {built.name}\033[0m\n{built.description}\n')
             built.build()
-        except:
+        except Exception as err:
             print(f'\033[91mFailed to build {built.name}\033[0m')
+            raise err
 
 
 def run(app):
