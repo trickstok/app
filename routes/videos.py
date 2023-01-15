@@ -103,5 +103,5 @@ class VideosRoutes(Route):
             if query:
                 users_results = users.search(query)
                 video_results = videos.search(query)
-                return {"msg": "Search in trickstok successfully", "data": {"users": users_results, "videos": video_results}}
-            return {"msg": "Please provide a query (q=)", "data": []}
+                return {"message": "Search in trickstok successfully", "data": {"users": users_results, "videos": video_results}}
+            return {"message": "Please provide a query (q=)", "data": []}
