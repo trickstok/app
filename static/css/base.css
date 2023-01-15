@@ -394,7 +394,7 @@ body {
 
 .overlay-head-close {
     cursor: pointer;
-    margin-left: 86vw;
+    margin-left: 85vw;
     position: absolute;
     transform: scale(1.35);
 }
@@ -407,7 +407,7 @@ body {
     padding: 10px;
     border-radius: 20px 20px 0 0;
     z-index: 99;
-    width: calc(100% - 10px);
+    width: 100%;
     background-color: #fff;
     transition: all 0.2s ease-in-out;
     overflow-y: scroll;
