@@ -215,11 +215,19 @@ body {
     overflow: hidden;
 }
 
+.video-container  {
+    position: absolute;
+    height: calc(100vh - 8.5vh);
+    top: 0;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
 .video {
     width: 100%;
     object-fit: cover;
     background: var(--bg);
-    max-height: 100vh;
     overflow: hidden;
     box-sizing: border-box;
 }
@@ -584,11 +592,9 @@ strong {
 }
 .video.up {
     animation: 2s up ease-in-out;
-    position: inherit;
 }
 .video.down {
     animation: 2s down ease-in-out;
-    position: inherit;
 }
 .photo {
     border: 1px solid var(--primary);
