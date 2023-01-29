@@ -1,4 +1,4 @@
-let tags_string, html, username, load
+let tags_string, html, username, load, chat_html, div, data, html_message, conversations_html, chat_name, chat_desc, chat_image, existing_chats, htmls, certified_html, html_user, query
 
 var video = document.querySelector(".video");
 video.onchange = function () {
