@@ -21,7 +21,7 @@ class AdminRoutes(Route):
                     videos_nb = videos.total
                     views_nb = videos.total_views
                     reports_nb = videos.total_reports
-                    notifs = notifications.get('admins')
+                    notifs = messages.getNotification('admins')
                     return auth('admin.html', success=success, reports=reports, users_nb=users_nb, videos_nb=videos_nb, views_nb=views_nb, reports_nb=reports_nb, notifs=notifs)
             return redirect('/log')
 
