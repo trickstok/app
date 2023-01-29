@@ -84,7 +84,9 @@
           </div>
 
 
-          <video poster="/static/assets/loader.png" data_id="{{video.video_id}}" style="cursor: s-resize;" title="Swipe" muted="" number="0" src="/media/videos/{{video.video_id}}" class="video" playsinline autoplay loop></video>
+          <div class="video-container">
+            <video poster="/static/assets/loader.png" data_id="{{video.video_id}}" style="cursor: s-resize;" title="Swipe" muted="" number="0" src="/media/videos/{{video.video_id}}" class="video" playsinline autoplay loop></video>
+          </div>
 
 
           <div class="top">
@@ -186,34 +188,64 @@
   </div>
   <div id="messages" style="display: none">
       <div class="container messages">
+        <button class="button is-third is-small is-square is-rounded" onclick="document.getElementById('newchatmodal').classList.add('is-active')"><i class="fas fa-paper-plane"></i></button>
+        <div class="modal" id="newchatmodal">
+          <div class="modal-background"></div>
+          <div class="modal-content is-fullwidth is-fullheight">
+            <section class="section has-padding" style="overflow: hidden">
+              <form onsubmit="return sendMessage(this.querySelector('input[name=to]').value, this.querySelector('input[name=message]').value, () => {closeModal('newchatmodal')})">
+                <div class="field has-addons">
+                  <div class="control">
+                    <a class="button is-static">
+                      @
+                    </a>
+                  </div>
+                  <div class="control is-expanded">
+                    <input id="user-search" class="input" pattern="^[a-z0-9_.]+$" type="text" placeholder="username" name="to">
+                    <div class="user-dropdown">
+                    </div>
+                  </div>
+                </div>
+                <div class="field has-addons" style="position: absolute; bottom: 1em;">
+                  <div class="control is-expanded">
+                    <input class="input" type="text" placeholder="Message..." name="message" required>
+                  </div>
+                  <div class="control">
+                    <button class="button" type="submit">
+                      <i class="fas fa-paper-plane"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </section>
+          </div>
+          <button class="modal-close is-large" aria-label="close" onclick="closeModal('newchatmodal')"></button>
+        </div>
         <h1 class="title">Messages</h1>
         <div class="chats">
-          <div class="conversation">
+          <div class="conversation" onclick="this.querySelector('.modal').classList.add('is-active')">
             <div class="image">
               <img class="no-rounded" src="/static/assets/notifications.svg" alt="Notification Icon">
             </div>
             <div class="infos">
               <p class="name">Notification</p>
-              <p class="last_message">Notification</p>
+              <p class="last_message">Notifications TricksTok</p>
             </div>
           </div>
           <div class="modal">
-            <div class="modal-content">
-              <!-- Any other Bulma elements you want -->
+            <div class="modal-content is-messages is-fullheight is-fullwidth">
+              <section class="section has-padding" style="overflow: hidden">
+                <div class="messages">
+
+                </div>
+              </section>
             </div>
             <button class="modal-close is-large" aria-label="close"></button>
           </div>
-          {% for conv in chats %}
-          <div class="conversation">
-            <div class="image">
-              <img src="/media/pdp/{{conv.image}}">
-            </div>
-            <div class="infos">
-              <p class="name">{{conv.name}}</p>
-              <p class="last_message">{{conv.last_message}}</p>
-            </div>
+          <hr>
+          <div id="other-conversations">
+
           </div>
-          {% endfor %}
         </div>
       </div>
   </div>
@@ -642,6 +674,7 @@
         }
         document.querySelector('.screenloader').classList.add('disable')
         fetchNextVideo()
+        loadMessages()
     })
 
     function fullScreen() {

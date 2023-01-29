@@ -55,7 +55,7 @@ class Users(DatabaseObject):
     def search(self, keyword):
         results = self.db.users.find({"$text": {'$search': keyword}})
         users_results = []
-        for user in results:
+        for user in list(results):
             del user['_id']
             del user['token']
             del user['password']

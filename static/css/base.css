@@ -637,6 +637,21 @@ strong {
     background: var(--primary);
 }
 
+#newchatmodal .modal-content {
+    height: 100%;
+}
+
+#user-search + .user-dropdown {
+    display: unset;
+    position: absolute;
+    margin-top: 3em;
+    background: var(--primary);
+    opacity: 50%;
+    left: 41%;
+    transform: translate(-50%);
+    width: 99vw;
+}
+
 .chats {
     display: flex;
     flex-direction: column;
@@ -688,6 +703,34 @@ strong {
 }
 .conversation .infos .last_message {
     font-size: .8em;
+}
+
+hr {
+    background-color: var(--third);
+}
+
+.messages:not(.container) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-y: scroll;
+    height: 92%;
+    overflow-x: hidden;
+}
+
+.messages .message {
+    padding: .5em;
+    background-color: var(--third);
+    max-width: 50%;
+    margin-left: .8em;
+    width: max-content;
+}
+
+.messages .message.right {
+    background-color: var(--blue);
+    margin-left: calc(100% - .8em);
+    transform: translate(-100%);
+    position: unset !important;
 }
 
 @keyframes up {
@@ -745,7 +788,7 @@ strong {
     padding-bottom: .5em;
 }
 
-#modify-account .modal-content, #settings-account .modal-content {
+#modify-account .modal-content, #settings-account .modal-content, #newchatmodal .modal-content, .modal-content.is-messages {
     width: 97%;
     border-radius: 11px;
 }

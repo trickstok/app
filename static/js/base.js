@@ -235,8 +235,166 @@ function like() {
     }
 }
 
+function openModal(id) {
+    document.getElementById(id).classList.add('is-active')
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('is-active')
+}
+
+function showUsersResults(el, results, input) {
+    htmls = []
+    for (const res of results) {
+        if (res.certified) {
+            certified_html = `<i class="fas fa-badge-check"></i>`
+        } else {
+            certified_html = ''
+        }
+        html_user = `<article class="media has-bd-b" onclick="document.getElementById('${input.id}').value = '${res.username}'; document.getElementById('${input.id}').focused = false;" style="display: flex; justify-content: center; align-items: center; scale: 0.8; cursor: pointer;">
+                  <figure class="media-left">
+                    <p class="image is-rounded" style="padding-left: .5em;">
+                      <img src="/media/pdp/${res.photo}" class="photo large is-rounded" alt="${res.resname}">
+                    </p>
+                  </figure>
+                  <div class="media-content">
+                    <div class="content">
+                      <p>
+                        <strong>${res.fullname}&nbsp;${certified_html}</strong> <br><small>@${res.username}</small>
+                      </p>
+                    </div>
+                  </div>
+               </article>`
+        htmls.push(html_user)
+    }
+    htmls.reverse()
+    el.innerHTML = htmls.join('<br>')
+}
+
+async function searchUsers(query) {
+    return await fetch(`/search?q=${query}&users=true`)
+        .then(resp => resp.json())
+        .then(data => {
+            return data.data
+        })
+}
+
+function sendMessage(to, content, callback) {
+    fetch('/send-message', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `to=${to}&content=${content}`
+    })
+        .then(resp => resp.json())
+        .then(json => {console.log(json.message)})
+    callback()
+    return false
+}
+
+function refreshMessages() {
+    loadMessages()
+}
+
+function loadMessages() {
+    fetch('/get-new-messages')
+        .then(resp => resp.json())
+        .then(json => {
+            data = json.data
+            existing_chats = []
+            for (let el of document.querySelectorAll('#other-conversations .modal')) {
+                existing_chats.push(el.id)
+            }
+            conversations_html = ""
+            for (let chat of Object.keys(data.messages)) {
+                chat_user = chat
+                chat = data.messages[chat_user]
+                chat_id = chat[0]._id
+                if (chat[0].from.username === chat_user) {
+                    chat_name = chat[0].from.fullname
+                    chat_image = `/media/pdp/${chat[0].from.photo}`
+                } else {
+                    chat_name = chat[0].to.fullname
+                    chat_image = `/media/pdp/${chat[0].to.photo}`
+                }
+                chat_desc = chat[chat.length - 1].content.slice(0, 20) + '...'
+                if (!existing_chats.includes(chat_id)) {
+                    chat_html = `<div class="conversation" onclick="openModal('${chat_id}')">
+                                <div class="image">
+                                  <img class="photo large" style="padding-right: 0; width: 3.5em !important; height: 3.5em !important;" src="${chat_image}" alt="Notification Icon">
+                                </div>
+                                <div class="infos">
+                                  <p class="name">${chat_name}</p>
+                                  <p class="last_message" id="desc${chat_id}">${chat_desc}</p>
+                                </div>
+                              </div>
+                              <div class="modal" id="${chat_id}">
+                                  <div class="modal-background"></div>
+                                  <div class="modal-content is-messages" id="chat${chat_id}">
+                                      <section class="section has-padding" style="overflow: hidden; height: 77vh; padding-top: 1.5rem; padding-bottom: 1.5rem;">
+                                          <div class="messages">`
+                    chat.forEach(message => {
+                        if (message.from.username === chat_user) {
+                            html_message = document.createElement('div')
+                            html_message.classList.add('message')
+                            html_message.innerText = message.content
+                        } else {
+                            html_message = document.createElement('div')
+                            html_message.classList.add('message')
+                            html_message.classList.add('right')
+                            html_message.innerText = message.content
+                        }
+                        chat_html += html_message.outerHTML
+                    })
+                    chat_html += `</div>
+                              <div class="field has-addons" style="position: absolute; bottom: 1em;">
+                                <div class="control is-expanded">
+                                  <input class="input" type="text" placeholder="Message..." name="message" required>
+                                </div>
+                                <div class="control">
+                                  <button class="button" onclick="sendMessage('${chat_user}', this.parentElement.parentElement.querySelector('input[name=message]').value, () =>{ closeModal('${chat_id}'); loadMessages() })">
+                                    <i class="fas fa-paper-plane"></i>
+                                  </button>
+                                </div>
+                              </div>
+                          </section>
+                          </div>
+                      <button class="modal-close is-large" aria-label="close" onclick="closeModal('${chat_id}')"></button>
+                      </div>`
+                    conversations_html += chat_html
+                } else {
+                    chat_html = ''
+                    chat.forEach(message => {
+                        if (message.from.username === chat_user) {
+                            html_message = document.createElement('div')
+                            html_message.classList.add('message')
+                            html_message.innerText = message.content
+                        } else {
+                            html_message = document.createElement('div')
+                            html_message.classList.add('message')
+                            html_message.classList.add('right')
+                            html_message.innerText = message.content
+                        }
+                        chat_html += html_message.outerHTML
+                    })
+                    div = document.getElementById(chat_id).querySelector('.messages')
+                    div.innerHTML = chat_html
+                    div.children[div.children.length - 1].scrollIntoView({block: "end"})
+                    document.getElementById(`desc${chat_id}`).innerText = chat[chat.length - 1].content.slice(0, 20) + '...'
+                }
+            }
+            document.querySelector('#other-conversations').innerHTML += conversations_html
+        })
+}
+
+window.setInterval(refreshMessages, 1000 * 30)
+
 // Event listeners
 
+document.getElementById('user-search').addEventListener('keyup', async () => {
+    showUsersResults(document.querySelector('.user-dropdown'), await searchUsers(document.getElementById('user-search').value), document.getElementById('user-search'))
+})
 range.addEventListener("click", setProgress);
 video.addEventListener("timeupdate", updateProgress);
 video.addEventListener("canplay", updateProgress);

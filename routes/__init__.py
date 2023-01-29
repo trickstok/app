@@ -6,9 +6,10 @@ from routes.video_files import *
 from routes.user import *
 from routes.trickstok import *
 from routes.static_files import *
+from routes.messages import *
 
 
-__routes_classes__ = [AdminRoutes, VideosRoutes, UserRoutes, VideoFilesRoutes, BasicRoutes, StaticFilesRoutes]
+__routes_classes__ = [AdminRoutes, VideosRoutes, UserRoutes, VideoFilesRoutes, BasicRoutes, StaticFilesRoutes, MessagesRoutes]
 
 
 def build(app):

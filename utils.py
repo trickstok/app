@@ -2,7 +2,7 @@ import datetime
 import locale
 import conf
 from flask import Flask, request, redirect, render_template
-from trickstok import Users, Videos, Mailer, Template, Notifications
+from trickstok import Users, Videos, Mailer, Template, Messages
 import ast
 
 
@@ -12,7 +12,7 @@ db_conf = {"user": configuration['App']['db_user'],  "password": configuration['
 users = Users(**db_conf, salt=configuration['App']['secret'])
 videos = Videos(**db_conf)
 mails = Mailer(**db_conf)
-notifications = Notifications(**db_conf)
+messages = Messages(**db_conf)
 templates = Template()
 mailing_lists = configuration['App']['mailing_lists'].split(',')
 app = Flask('Tricks Tok, The TikTok of Tricks')

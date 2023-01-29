@@ -41,6 +41,12 @@
     padding: 1.5em !important;
 }
 
+.button.is-small.is-square {
+    position: absolute;
+    right: 1.5em;
+    border-radius: 10px;
+}
+
 .label:not(:last-child) {
     margin-bottom: .5em;
 }

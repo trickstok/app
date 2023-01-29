@@ -100,6 +100,9 @@ class VideosRoutes(Route):
         @self.app.route('/search')
         def search():
             query = request.args.get('q')
+            if request.args.get('users') == 'true':
+                users_results = users.search(query)
+                return {"message": "Search in trickstok successfully", "data": users_results}
             if query:
                 users_results = users.search(query)
                 video_results = videos.search(query)
