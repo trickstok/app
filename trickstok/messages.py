@@ -3,7 +3,7 @@ from trickstok import DatabaseObject
 
 class Messages(DatabaseObject):
 
-    notification = "trickstok"
+    notification = "@NOTIFICATIONS@"
 
     def __init__(self, user, password, url):
         super().__init__(user, password, url)
@@ -35,9 +35,11 @@ class Messages(DatabaseObject):
             del message['from']['password']
             del message['from']['token']
             del message['from']['_id']
+            del message['from']['ban_history']
             del message['to']['password']
             del message['to']['token']
             del message['to']['_id']
+            del message['to']['ban_history']
             message['_id'] = str(message['_id'])
             if message['from']['username'] == username:
                 chats_messages[message['to']['username']].append(message)
