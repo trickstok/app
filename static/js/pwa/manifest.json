@@ -9,10 +9,11 @@
     {
       "src": "/static/assets/trickstok_logo_trans.png",
       "type": "image/png",
-      "sizes": "100x100"
+      "sizes": "680x680"
     }
   ],
   "start_url": "/home",
+  "id": "/home",
   "display": "standalone",
   "orientation": "portrait"
 }
