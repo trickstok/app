@@ -1,3 +1,5 @@
+import os
+
 from utils import *
 from flask import send_file, request, redirect, make_response
 import re
@@ -66,7 +68,9 @@ class UserRoutes(Route):
             photo_id = secrets.token_urlsafe(16)
             photo_string = f"{photo_id}.{photo_ext}"
             photo.save(f'data/pdp/{photo_string}')
-            users.add(email, username, fullname, False, False, [], photo_string, bio, password)
+            photo_url = upload_to_cdn(f'data/pdp/{photo_string}')
+            os.remove(f'data/pdp/{photo_string}')
+            users.add(email, username, fullname, False, False, [], photo_url, bio, password)
             response = make_response(redirect('/home'))
             response.set_cookie('token', users.find_by_username(username)['token'])
             response.set_cookie('username', username)
@@ -101,9 +105,11 @@ class UserRoutes(Route):
                     photo_id = secrets.token_urlsafe(16)
                     photo_string = f"{photo_id}.{photo_ext}"
                     photo.save(f'data/pdp/{photo_string}')
+                    photo_url = upload_to_cdn(f'data/pdp/{photo_string}')
+                    os.remove(f'data/pdp/{photo_string}')
                 else:
-                    photo_string = user['photo']
-                users.update(user['username'], email, username, fullname, interests, photo_string, bio)
+                    photo_url = user['photo']
+                users.update(user['username'], email, username, fullname, interests, photo_url, bio)
                 return redirect('/home#account')
             return redirect('/log')
 

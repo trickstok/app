@@ -1,3 +1,4 @@
+import os
 import secrets
 import shutil
 
@@ -59,7 +60,11 @@ class VideosRoutes(Route):
                     video_object.release()
                 else:
                     shutil.copy('static/assets/loader.png', f'data/thumbnails/{video_string}.png')
-                videos.add(user['_id'], description, tags, video_string)
+                video_url = upload_to_cdn(f'data/videos/{video_string}')
+                thumbnail_url = upload_to_cdn(f'data/thumbnails/{video_string}.png')
+                os.remove(f'data/videos/{video_string}')
+                os.remove(f'data/thumbnails/{video_string}.png')
+                videos.add(user['_id'], description, tags, video_string, video_url, thumbnail_url)
                 return redirect(f'/home?video={video_string}')
             return redirect('/log')
 

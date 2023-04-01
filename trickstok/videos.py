@@ -22,12 +22,14 @@ class Videos(DatabaseObject):
     def total_reports(self):
         return self.db.reports.count_documents({})
 
-    def add(self, user, description, tags, video_id):
+    def add(self, user, description, tags, video_id, video_url, thumbnail_url):
         self.db.videos.insert_one({
             "user": user,
             "description": description,
             "tags": tags,
-            "video_id": video_id
+            "video_id": video_id,
+            "file": video_url,
+            "thumbnail": thumbnail_url
         })
 
     def search(self, keyword):

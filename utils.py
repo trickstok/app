@@ -1,6 +1,7 @@
 import datetime
 import locale
 import conf
+import requests
 from flask import Flask, request, redirect, render_template
 from trickstok import Users, Videos, Mailer, Template, Messages
 import ast
@@ -8,6 +9,8 @@ import ast
 
 locale.setlocale(locale.LC_ALL, "fr_FR.UTF-8")
 configuration = conf.asdict()
+CDN_API_KEY = configuration['Cdn']['api_key']
+CDN_ENDPOINT = configuration['Cdn']['endpoint']
 db_conf = {"user": configuration['App']['db_user'],  "password": configuration['App']['db_password'], "url": configuration['App']['db_url']}
 users = Users(**db_conf, salt=configuration['App']['secret'])
 videos = Videos(**db_conf)
@@ -53,3 +56,15 @@ def is_logged():
         if user['token'] == token and user['banned'] == False:
             return True, user
     return False, {}
+
+
+def upload_to_cdn(file):
+    headers = {
+        'api-key': CDN_API_KEY
+    }
+    url = CDN_ENDPOINT + '/media/upload'
+    file = {'media': open(file, 'rb')}
+    response = requests.post(url, files=file, headers=headers)
+    print(response.json())
+    file_url = response.json()['url'].replace('http://', 'https://')
+    return file_url

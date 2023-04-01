@@ -5,7 +5,7 @@
   <div class="container profil">
     <div class="profile">
       <div class="image">
-        <img src="/media/pdp/{{profile.photo}}" alt="{{profile.username}}" class="photo large">
+        <img src="{{profile.photo}}" alt="{{profile.username}}" class="photo large">
       </div>
       <div class="infos">
         <h1>{{profile.username}} {% if profile.certified %}<i class="fas fa-badge-check"></i>{% endif %}</h1>
@@ -16,8 +16,8 @@
       {% for video in videos %}
       <div class="video-card" onclick="location.href = '/home?video={{video.video_id}}'">
         <div class="video-media">
-          <video poster="/media/videos/{{video.video_id}}/thumbnail">
-            <source src="/media/videos/{{video.video_id}}/thumbnail" type="video/mp4" />
+          <video poster="{{video.thumbnail}}">
+            <source src="{{video.thumbnail}}" type="video/mp4" />
           </video>
         </div>
         <div class="video-footer">

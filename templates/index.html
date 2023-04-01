@@ -66,7 +66,7 @@
                 {% for comment in video.comments %}
                 <div class="comments-item">
                   <span class="comment-top">
-                    <span class="comment-top-logo image is-rounded"><img src="/media/pdp/{{comment.user.photo}}" class="photo is-rounded"></span>
+                    <span class="comment-top-logo image is-rounded"><img src="{{comment.user.photo}}" class="photo is-rounded"></span>
                     <span class="comment-top-details">
                       <span class="user-name">{{comment.user.fullname}}</span>
                       <span class="user-time">{{comment.user.username}}</span>
@@ -85,7 +85,7 @@
 
 
           <div class="video-container">
-            <video poster="/static/assets/loader.png" data_id="{{video.video_id}}" style="cursor: s-resize;" title="Swipe" muted="" number="0" src="/media/videos/{{video.video_id}}" class="video" playsinline autoplay loop></video>
+            <video poster="/static/assets/loader.png" data_id="{{video.video_id}}" style="cursor: s-resize;" title="Swipe" muted="" number="0" src="{{video.file}}" class="video" playsinline autoplay loop></video>
           </div>
 
 
@@ -105,7 +105,7 @@
           <div class="right">
               <div class="icons-item right-icon to-profile" link="{{video.user.username}}">
                 <span class="icon">
-                    <img id="userpp" src="/media/pdp/{{video.user.photo}}" alt="{{video.user.username}}" class="photo small">
+                    <img id="userpp" src="{{video.user.photo}}" alt="{{video.user.username}}" class="photo small">
                 </span>
                 <span id="user" class="icon-label right-label"></span>
               </div>
@@ -255,7 +255,7 @@
               <button class="button is-primary is-small is-square is-rounded" onclick="document.getElementById('modify-account').classList.add('is-active')" style="position: absolute; right: 1.5em; top: 1.5em"><i class="fas fa-edit"></i></button>
               <button class="button is-third is-small is-square is-rounded" onclick="document.getElementById('settings-account').classList.add('is-active')" style="position: absolute; left: 1.5em; top: 1.5em"><i class="fas fa-cog fa-lg"></i></button>
               <div class="image">
-                  <img src="/media/pdp/{{user.photo}}" alt="{{user.username}}" class="photo large">
+                  <img src="{{user.photo}}" alt="{{user.username}}" class="photo large">
               </div>
               <div class="infos">
                   <h1>{{user.username}} {% if user.certified %}<i class="fas fa-badge-check"></i>{% endif %}</h1>
@@ -266,8 +266,8 @@
             {% for video in user.videos %}
             <div class="video-card">
               <div class="video-media" onclick="location.href = '/home?video={{video.video_id}}'">
-                <video poster="/media/videos/{{video.video_id}}/thumbnail">
-                  <source src="/media/videos/{{video.video_id}}/thumbnail" type="video/mp4" />
+                <video poster="{{video.thumbnail}}">
+                  <source src="{{video.thumbnail}}" type="video/mp4" />
                 </video>
               </div>
               <div class="video-footer">
@@ -344,7 +344,7 @@
                   <label class="label">Photo</label>
                   <figure class="media-left">
                     <p class="image is-64x64" style="margin-bottom: 1em;">
-                      <img class="is-rounded" src="/media/pdp/{{user.photo}}" style="object-fit: cover; width: 100%; height: 100% !important;" id="preview">
+                      <img class="is-rounded" src="{{user.photo}}" style="object-fit: cover; width: 100%; height: 100% !important;" id="preview">
                     </p>
                   </figure>
                   <div class="file">
@@ -458,6 +458,13 @@
               <h1 class="title is-3">Demander une certification</h1>
               <p class="subtitle is-6">@{{user.username}}&nbsp;<i class="fas fa-badge-check"></i> est déjà un compte certifié par TricksTok...</p>
               {% endif %}
+              <br>
+              <br>
+              <form method="get" action="/" onsubmit="document.cookie = ''; return true">
+                <h1 class="title is-3">Se déconnecter</h1>
+                <p class="subtitle is-6">En cliquant ci-dessous, vous serez déconnectés de votre compte...</p>
+                <button class="button is-secondary">Se déconnecter</button>
+              </form>
               <br>
               <br>
               <form method="get" action="/get-my-data">

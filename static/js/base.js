@@ -109,8 +109,8 @@ function search() {
                 html += `
                 <div class="video-card">
                   <div class="video-media" onclick="location.href = '/home?video=${result.video_id}'">
-                    <video poster="/media/videos/${result.video_id}/thumbnail">
-                        <source src="/media/videos/${result.video_id}/thumbnail" type="video/mp4" />
+                    <video poster="${result.thumbnail}">
+                        <source src="${result.thumbnail}" type="video/mp4" />
                     </video>
                   </div>
                   <div class="video-footer">
@@ -140,7 +140,7 @@ function search() {
                 <article class="media has-bd-b" style="cursor: pointer" onclick="location.href = '/u/${user.username}'">
                   <figure class="media-left">
                     <p class="image is-rounded" style="padding-left: .5em;">
-                      <img src="/media/pdp/${user.photo}" class="photo large is-rounded" alt="${user.username}">
+                      <img src="${user.photo}" class="photo large is-rounded" alt="${user.username}">
                     </p>
                   </figure>
                   <div class="media-content">
@@ -165,7 +165,7 @@ function fetchNextVideo() {
         .then(resp => resp.json())
         .then(data => {
             nextVideoObject = data.data
-            document.createElement('img').src = `/media/videos/${nextVideoObject.video_id}/thumbnail`
+            document.createElement('img').src = `${nextVideoObject.thumbnail}`
         })
 }
 
@@ -189,7 +189,7 @@ function loadNewVideo() {
         if (videoObject.user.certified) {
             user.innerHTML += '&nbsp;<i class="fas fa-badge-check"></i>'
         }
-        userPp.src = `/media/pdp/${videoObject.user.photo}`
+        userPp.src = `${videoObject.user.photo}`
         to_profile.forEach(el => {
             el.setAttribute('link', videoObject.user.username)
         })
@@ -201,7 +201,7 @@ function loadNewVideo() {
             html = `
         <div class="comments-item">
             <span class="comment-top">
-              <span class="comment-top-logo image is-rounded"><img src="/media/pdp/${comment.user.photo}" class="photo is-rounded"></span>
+              <span class="comment-top-logo image is-rounded"><img src="${comment.user.photo}" class="photo is-rounded"></span>
               <span class="comment-top-details">
                 <span class="user-name">${comment.user.fullname}</span>
                 <span class="user-time">${comment.user.username}</span>
@@ -213,8 +213,8 @@ function loadNewVideo() {
         }
 
         setTimeout(() => {
-            video.poster = `/media/videos/${videoID}/thumbnail`
-            video.src = `/media/videos/${videoID}`
+            video.poster = `${videoObject.thumbnail}`
+            video.src = `${videoObject.file}`
         }, 1000)
     }
 
@@ -254,7 +254,7 @@ function showUsersResults(el, results, input) {
         html_user = `<article class="media has-bd-b" onclick="document.getElementById('${input.id}').value = '${res.username}'; document.getElementById('${input.id}').focused = false;" style="display: flex; justify-content: center; align-items: center; scale: 0.8; cursor: pointer;">
                   <figure class="media-left">
                     <p class="image is-rounded" style="padding-left: .5em;">
-                      <img src="/media/pdp/${res.photo}" class="photo large is-rounded" alt="${res.resname}">
+                      <img src="${res.photo}" class="photo large is-rounded" alt="${res.resname}">
                     </p>
                   </figure>
                   <div class="media-content">
@@ -313,10 +313,10 @@ function loadMessages() {
                 chat_id = chat[0]._id
                 if (chat[0].from.username === chat_user) {
                     chat_name = chat[0].from.fullname
-                    chat_image = `/media/pdp/${chat[0].from.photo}`
+                    chat_image = `${chat[0].from.photo}`
                 } else {
                     chat_name = chat[0].to.fullname
-                    chat_image = `/media/pdp/${chat[0].to.photo}`
+                    chat_image = `${chat[0].to.photo}`
                 }
                 chat_desc = chat[chat.length - 1].content.slice(0, 20) + '...'
                 if (!existing_chats.includes(chat_id)) {

@@ -64,8 +64,9 @@ class VideoFilesRoutes(Route):
             logged, user = is_logged()
             if logged:
                 if request.args.get('different_of') is not None:
-                    video = videos.random(user['_id'], request.args.get('different_of')).video
+                    video = videos.random(user['_id'], request.args.get('different_of'))
                 else:
-                    video = videos.random(user['_id']).video
-                return {"data": video}
+                    video = videos.random(user['_id'])
+                video.add_view(user['_id'])
+                return {"data": video.video}
             return {}
