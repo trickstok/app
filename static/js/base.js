@@ -165,7 +165,9 @@ function fetchNextVideo() {
         .then(resp => resp.json())
         .then(data => {
             nextVideoObject = data.data
-            document.createElement('img').src = `${nextVideoObject.thumbnail}`
+            fetch(nextVideoObject.thumbnail).then(() => {
+                fetch(nextVideoObject.file)
+            })
         })
 }
 

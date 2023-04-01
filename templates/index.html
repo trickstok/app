@@ -23,6 +23,11 @@
   <p class="has-text-white has-text-bold">Chargement de TricksTok...</p>
 </div>
   <div id="home">
+      <div id="network-indicator" class="is-hidden">
+        <div class="notification is-danger" align="center">
+          <h2><i class="fas fa-wifi-slash"></i>&nbsp;Aucune connexion à internet</h2>
+        </div>
+      </div>
       <div class="container container-video">
           <div class="overlay">
               <div class="howto">
@@ -253,7 +258,7 @@
       <div class="container profil">
           <div class="profile">
               <button class="button is-primary is-small is-square is-rounded" onclick="document.getElementById('modify-account').classList.add('is-active')" style="position: absolute; right: 1.5em; top: 1.5em"><i class="fas fa-edit"></i></button>
-              <button class="button is-third is-small is-square is-rounded" onclick="document.getElementById('settings-account').classList.add('is-active')" style="position: absolute; left: 1.5em; top: 1.5em"><i class="fas fa-cog fa-lg"></i></button>
+              <button class="button is-third is-small is-square is-rounded" onclick="document.getElementById('settings-account').classList.add('is-active')" style="position: absolute; left: 1.5em; top: 1.5em"><i class="fas fa-cog fa-lg"></i><div class="A2HS bubble"></div></button>
               <div class="image">
                   <img src="{{user.photo}}" alt="{{user.username}}" class="photo large">
               </div>
@@ -440,6 +445,12 @@
               <h2 class="title is-2">Paramètres</h2>
               <p class="subtitle is-6">Paramètres et action du profil</p>
               <hr>
+              <div class="A2HS">
+                <h1 class="title is-3">Installer l'application</h1>
+                <button class="button is-third" id="install-app">Installer&nbsp;<i class="fas fa-download fa-lg"></i></button>
+              </div>
+              <br>
+              <br>
               {% if not user.certified %}
               <form method="post" action="/ask-certify">
                 <h1 class="title is-3">Demander une certification</h1>
@@ -527,15 +538,15 @@
 <script src="/static/js/base.js"></script>
 <script>
     let ids = ['search', 'home', 'account', 'messages']
+    let A2HSButton = document.getElementById("install-app")
     let playPauseIcon = document.getElementById('playpauseicon')
     let pauseOverlay = document.querySelector('.pause')
     let overlayMore = document.querySelector('.overlay')
-    let number, link;
+    let number, link, deferredPrompt;
     var videoID = '{{video.video_id}}'
     var videoObject = {{video|string|replace('True', 'true')|replace('False', 'false')|safe|replace('datetime.datetime', 'Date')}}
     const videos = [];
     const comments_ids = [];
-    const videos_length = videos.length;
 
     video.pause()
 
@@ -680,6 +691,12 @@
             changePage(window.location.hash.replace('#', ''))
         }
         document.querySelector('.screenloader').classList.add('disable')
+        document.querySelectorAll('.A2HS').forEach(el => el.style = 'display: none;')
+        if (!navigator.onLine) {
+            document.getElementById('network-indicator').classList.remove('is-hidden')
+        } else {
+            document.getElementById('network-indicator').classList.add('is-hidden')
+        }
         fetchNextVideo()
         loadMessages()
     })
@@ -695,5 +712,36 @@
         removeEls.forEach(el => {document.getElementById(el).style = 'display: none'})
     }
 
+    window.addEventListener("beforeinstallprompt", (e) => {
+        deferredPrompt = e;
+        A2HSButton.style = '';
+        document.querySelectorAll('.A2HS').forEach(el => el.style = '')
+        A2HSButton.addEventListener("click", () => {
+            A2HSButton.style = "display: none";
+            document.querySelectorAll('.A2HS').forEach(el => el.style = 'display: none;')
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === "accepted") {
+                    console.log("User accepted the A2HS prompt");
+                } else {
+                    console.log("User dismissed the A2HS prompt");
+                }
+                deferredPrompt = null;
+            });
+        });
+
+    });
+
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
+    }
+
+    window.addEventListener('offline', () => {
+        document.getElementById('network-indicator').classList.remove('is-hidden')
+    })
+
+    window.addEventListener('online', () => {
+        document.getElementById('network-indicator').classList.add('is-hidden')
+    })
 </script>
 {% endblock %}
